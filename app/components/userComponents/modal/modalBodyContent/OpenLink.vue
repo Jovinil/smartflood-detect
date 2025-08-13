@@ -10,13 +10,12 @@
                 disabled 
             />
 
-            <UTooltip text="Copy to clipboard">
             <UButton
                 color="primary"
                 variant="solid"
                 label="Open Link"
+                to="/user/registration/register"
             />
-            </UTooltip>
         </UButtonGroup>
     </div>
     <div>Click button to open link for user registration</div>

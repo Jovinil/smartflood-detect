@@ -5,19 +5,19 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
 
+ 
+
   dir: {
     pages: './app/pages',
     layouts: './app/layouts',
   },
   components: [
     {
-      path: '~/app/components', // Path to your components directory
-      extensions: ['vue'], // Auto-import .vue files
-      pathPrefix: false, // Disable prefixing with directory name
+      path: '~/app/components', 
+      extensions: ['vue'],
+      pathPrefix: false, 
     },
-    { path: '~/app/components/userComponents/modal', extensions: ['vue'], pathPrefix: false },
-    { path: '~/app/components/userComponents/modal/modalBodyContent', extensions: ['vue'], pathPrefix: false },
-    { path: '~/app/components/userComponents/modal/modalMainComponents', extensions: ['vue'], pathPrefix: false },
+
   ],
   css: ['~/assets/css/main.css'],
   
@@ -31,8 +31,19 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/ui',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    'nuxt-mapbox',
   ],
-  colorMode: { classSuffix: '' },
-});
+  
+   runtimeConfig: {
+    public: {
+      mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN
+    }
+  },
+  mapbox: {
+    // Use runtimeConfig value for mapbox
+    accessToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN
+  },
 
+  colorMode: { classSuffix: '' }
+});

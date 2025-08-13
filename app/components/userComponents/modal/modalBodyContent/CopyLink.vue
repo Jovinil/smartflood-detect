@@ -1,5 +1,5 @@
 <template>
-    <div class="flex item-center justify-center w-full">
+   <div class="flex item-center justify-center w-full">
         <UButtonGroup class="w-full px-5">
             <UInput
                 class="w-full"
@@ -10,15 +10,14 @@
                 disabled 
             />
 
-            <UTooltip text="Copy to clipboard">
             <UButton
                 color="neutral"
                 variant="subtle"
                 icon="i-lucide-clipboard"
                 label="Copy Link"
             />
-            </UTooltip>
+
         </UButtonGroup>
     </div>
     <div>Copy link and open it on any browser for user registration</div>
-</template>
+</template> 

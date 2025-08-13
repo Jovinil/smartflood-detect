@@ -1,5 +1,5 @@
 <template>
-  <UCard variant="subtle">
+  <UCard variant="subtle" :ui="{ root: 'flex flex-col shadow-xl', body: 'flex-1', footer: 'text-end py-2' }">
     <template #header>
       <!-- <Placeholder class="h-8" /> -->
       Water Level Chart

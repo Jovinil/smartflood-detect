@@ -1,5 +1,5 @@
 <template>
-   <UCard class="w-full" variant="subtle" :ui="{  root: 'flex flex-col', header: '', body: 'flex-1' }">
+   <UCard class="w-full" variant="subtle" :ui="{  root: 'flex flex-col shadow-xl', header: '', body: 'flex-1' }">
       <template #header>
         
         <div class="flex items-center justify-between">

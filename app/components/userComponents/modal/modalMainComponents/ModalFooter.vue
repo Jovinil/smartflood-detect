@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-100 flex justify-center border-2 border-transparent rounded-lg">
+    <div class="bg-gray-100 mb-3 sm:mb-0 flex justify-center border-2 border-transparent rounded-lg">
         <UButton
         label="QR Code Scan"  
         color="primary"
