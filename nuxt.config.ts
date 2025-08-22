@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
+  ssr: false,
 
   dir: {
     pages: './app/pages',
@@ -40,20 +41,26 @@ export default defineNuxtConfig({
     'nuxt-vuefire',
   ],
   
-  vuefire: {
+   vuefire: {
     config: {
       apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
       projectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
-      appId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
       storageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-
-      // there could be other properties depending on the project
+      messagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+      measurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     },
-
     auth: {
-      enabled: true
+      enabled: true,
+      // sessionCookie: true, // Consider carefully if session cookies are needed for your use case
+    },
+    appCheck: {
+      enabled: true,
+      provider: 'ReCaptchaV3', // Use ReCaptchaV3 for non-enterprise
+      key: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY, // Your reCAPTCHA v3 site key
+      isTokenAutoRefreshEnabled: true,
+      // debug: process.env.NODE_ENV !== 'production', // Enable debug mode in development
     },
   },
 
@@ -61,13 +68,6 @@ export default defineNuxtConfig({
    runtimeConfig: {
     public: {
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN,
-      // firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
-      // firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      // firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
-      // firebaseStorageBucket:  process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      // firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      // firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
-      // firebaseMeasurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     }
   },
   mapbox: {
@@ -77,5 +77,4 @@ export default defineNuxtConfig({
 
   colorMode: { classSuffix: '' },
 
-  plugins: ['~/plugins/firebase.ts']
 });

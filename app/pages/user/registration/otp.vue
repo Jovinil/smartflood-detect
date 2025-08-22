@@ -14,14 +14,19 @@
       maxlength="11"
       class="mb-4 w-full"
     />
-
+  
      <div class="text-end w-full">
-      <UButton color="primary" variant="outline" to="/user/registration/redirect">Submit</UButton>
+       <button @click="">Send OTP</button>
+    <div id="recaptcha"></div>
+    <input  placeholder="Enter OTP" />
+    <button @click="">Verify</button>
+      <!-- <UButton color="primary" variant="outline  " to="/user/registration/redirect">Submit</UButton> -->
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: 'login' 
 })
+
 </script>
