@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-mapbox',
     'nuxt-vuefire',
+    '@pinia/nuxt'
   ],
   
    vuefire: {
