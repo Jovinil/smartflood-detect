@@ -5,15 +5,17 @@
         
     </div> -->
    <h1 class="text-2xl font-bold mb-4 text-center">Login</h1>
-   <div>
+   <form @submit.prevent="handleLogin" method="post">
+    <div>
         <p class="text-[12px] text-gray-700 dark:text-gray-400 mb-2">Username</p>
             <UInput 
             color="neutral" 
             variant="subtle" 
             icon="i-lucide-user" 
             placeholder="Username" 
-            type="text"
+            type="email"
             class="mb-3 w-full"
+            v-model="email"
         />
 
    </div>
@@ -26,17 +28,32 @@
         placeholder="Password" 
         type="password"
         class="mb-3 w-full"
+        v-model="password"
         />
 
-   </div>
-   
-    <div class="text-end w-full">
-      <UButton color="primary" variant="outline" to="/admin/profile/editing-profile">Login</UButton>
+      </div>
+      <!-- UI NEEDS WORK -->
+      <p class="text-[12px] text-gray-700 dark:text-red-400 mb-2">{{ errorMessage }}</p>
+   <div class="text-end w-full">
+     <UButton color="primary" variant="outline" type="submit">Login</UButton>
     </div>
+  </form>
+  
+  <div>
+  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: 'login' 
 })
+
+const email = ref('')
+const password = ref('')
+const { errorMessage, login} = useAuth();
+
+const handleLogin = async () => {
+  await(login(email.value, password.value))
+}
+
 </script>

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   dir: {
     pages: './app/pages',
     layouts: './app/layouts',
+    middleware: './app/middleware',
   },
   imports: {
     dirs: [
