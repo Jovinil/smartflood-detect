@@ -5,6 +5,9 @@
       <nav class="flex items-center">
         <DarkModeToggle />
         <BaseModal />
+
+        <!-- implement an user auth that recognizes whether user is admin or user -->
+        <Profile />
       </nav>
     </div>
   </header>

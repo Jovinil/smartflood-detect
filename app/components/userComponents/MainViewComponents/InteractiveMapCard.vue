@@ -33,7 +33,7 @@
     </div>
    
     <template #footer>
-      <UButton to="/user/userInteractiveMap" color="neutral" variant="outline">View</UButton>
+      <UButton to="/userInteractiveMap" color="neutral" variant="outline">View</UButton>
     </template>
   </UCard>
 

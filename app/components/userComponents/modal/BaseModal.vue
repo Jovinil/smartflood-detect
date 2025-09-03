@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Body } from '#components';
-import ModalBody from './modalMainComponents/ModalBody.vue';
-import ModalFooter from './modalMainComponents/ModalFooter.vue';
+import ModalBody from './RegistrationModalMainComponents/ModalBody.vue';
+import ModalFooter from './RegistrationModalMainComponents/ModalFooter.vue';
 
 </script>
 
