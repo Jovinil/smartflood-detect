@@ -14,12 +14,5 @@
         variant="ghost"
         class="flex-1  justify-center"
         />
-        <UButton
-        label="Manual Input" 
-        active-variant="solid" 
-        color="primary"
-        variant="ghost"
-        class="flex-1  justify-center"
-        />
     </div>
 </template>

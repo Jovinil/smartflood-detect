@@ -22,3 +22,5 @@ logs
 .env
 .env.*
 !.env.example
+
+smart-flood-development-firebase-adminsdk-fbsvc-5a6c69b78f.json
