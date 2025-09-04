@@ -1,5 +1,6 @@
 <template>
     <div class="flex flex-col h-auto md:flex-1 p-4 rounded-md shadow-xl bg-gray-100 dark:bg-gray-950">
+
       <UCollapsible v-model:open="openOne" class="flex flex-col gap-2 w-full mb-3" 
       :ui="{
         content: 'bg-gray-200 dark:bg-gray-700 rounded-sm px-3 py-2'
@@ -17,7 +18,7 @@
             <p>Gogon Triangle Device</p>
 
 
-
+            <!-- implement an user auth that recognizes whether user is admin -->
             <UButton 
               color="primary"   
               icon="i-lucide-edit"
@@ -35,8 +36,7 @@
         </template>
       </UCollapsible>
 
-
-  
+    
 
       <!-- <UCollapsible v-model:open="openTwo" class="flex flex-col gap-2 w-full" 
       :ui="{

@@ -1,6 +1,6 @@
 <template>
-
-   <h1 class="text-2xl font-bold mb-4">Registration Portal</h1>
+    <ThemeToggle />
+    <h1 class="text-2xl font-bold my-4 text-center">Registration Portal</h1>
     <p class="text-[12px] text-gray-700 dark:text-gray-400 mb-2">Phone Number</p>
     <UInput 
       color="neutral" 

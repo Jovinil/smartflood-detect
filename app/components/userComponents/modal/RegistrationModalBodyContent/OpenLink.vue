@@ -8,7 +8,20 @@
                 variant="outline" 
                 value="https://smartflood-detect.xyz" 
                 disabled 
-            />
+                v-model="value"
+                :ui="{ trailing: 'pr-0.5' }"
+            >
+                <template v-if="value?.length" #trailing>
+                    <UButton
+                    :color="copied ? 'success' : 'neutral'"
+                    variant="link"
+                    size="xl"
+                    :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                    aria-label="Copy to clipboard"
+                    @click="copy(value)"
+                    />
+                </template>
+            </UInput>
 
             <UButton
                 color="primary"
@@ -20,3 +33,11 @@
     </div>
     <div>Click button to open link for user registration</div>
 </template>
+
+<script setup lang="ts">
+import { useClipboard } from '@vueuse/core'
+
+const value = ref('https://smartflood-detect.xyz')
+
+const { copy, copied } = useClipboard()
+</script>   
