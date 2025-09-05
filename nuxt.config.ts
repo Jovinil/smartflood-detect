@@ -38,7 +38,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
-    'nuxt-mapbox',
     'nuxt-vuefire',
     '@pinia/nuxt'
   ],
@@ -67,14 +66,10 @@ export default defineNuxtConfig({
   },
 
   
-   runtimeConfig: {
+  runtimeConfig: {
     public: {
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN,
     }
-  },
-  mapbox: {
-    // Use runtimeConfig value for mapbox
-    accessToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN
   },
 
   colorMode: { classSuffix: '' },

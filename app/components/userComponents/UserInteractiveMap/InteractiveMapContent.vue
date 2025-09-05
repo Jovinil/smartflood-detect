@@ -23,10 +23,11 @@
 </script>
 
 <template>
-  <UCard id="map-container" variant="subtle" :ui="{ root: 'flex flex-col h-auto md:flex-2 shadow-xl bg-gray-100 dark:bg-gray-950 relative',  body: 'h-80 md:flex-1 flex', footer: 'text-end  py-2' }">
+  <UCard  variant="subtle" :ui="{ root: 'flex flex-col h-auto md:flex-2 shadow-xl bg-gray-100 dark:bg-gray-950 relative',  body: 'h-80 md:flex-1 flex', footer: 'text-end  py-2' }">
 
     <!-- Modal content -->
     <div v-if="modalStore.isModalOpen" class="absolute inset-0 w-full h-full m-0 flex justify-center items-center z-50 bg-elevated/75 px-10" >
+
       <div class="absolute top-0 right-0 py-5 px-5">
         <UButton
         @click="modalStore.toggleModal()"
@@ -37,10 +38,11 @@
           leadingIcon: 'text-primary',
           base: ''
         }"
-      >
-      </UButton>
+        >
+        </UButton>
       </div>
-      <UCard variant="subtle" :ui="{ root: 'flex flex-col shadow-xl w-full md:w-1/2 bg-gray-200 box-shadow dark:bg-gray-800', body: 'flex items-center justify-center', footer: 'text-end py-2' }">
+
+      <UCard variant="subtle" :ui="{ root: 'flex flex-col shadow-xl w-full md:w-1/2 bg-gray-200 box-shadow dark:bg-gray-950', body: 'flex items-center justify-center', footer: 'text-end py-2' }">
         <template #header>
           <span class="text-gray-950 dark:text-gray-200">
             Edit Device Name
@@ -71,8 +73,8 @@
         
       </div>
     </template>
-    <div class="h-80 md:flex-1 md:h-full flex">
-      <div class="absolute right-0 bottom-0 pe-15 pb-12 "> 
+    <div class="h-80 md:flex-1 md:h-full flex bg-primary relative">
+      <div class="absolute right-0 bottom-0 pe-15 pb-12 z-50"> 
           <UButton  
             icon="i-lucide-plus" 
             variant="outline"

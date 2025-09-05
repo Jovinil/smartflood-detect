@@ -1,27 +1,36 @@
-<script setup>
-import { ref, computed } from 'vue'
-const colorMode = useColorMode()
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
+import { useThemeStore } from '~/app/stores/theme'
 
-function toggleTheme() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-}
+const themeStore = useThemeStore()
+
+onMounted(() => {
+  // make sure Pinia state matches Nuxt color mode on load
+  themeStore.init()
+})
 
 const label = computed(() =>
-  colorMode.value === 'dark' ? 'Switch to Light' : 'Switch to Dark'
+  themeStore.colorMode === 'dark' ? 'Switch to Light' : 'Switch to Dark'
 )
+
+const isDark = computed({
+  get: () => themeStore.colorMode === 'dark',
+  set: (val: boolean) => {
+    themeStore.colorMode = val ? 'dark' : 'light'
+  }
+})
+
 </script>
 
 <template>
   <USwitch
-    @click="toggleTheme"
+    @click="themeStore.toggleLightDark"
     :label="label"
+    v-model="isDark"
     unchecked-icon="i-lucide-sun"
     checked-icon="i-lucide-moon"
-    default-value
     variant="ghost"
     class="px-4 py-2 rounded text-gray-900 dark:text-gray-100"
-    :ui="{ 
-      base: 'border-2 border-gray-400 dark:border-gray-600',
-     }"
+    :ui="{ base: 'border-2 border-gray-400 dark:border-gray-600' }"
   />
 </template>

@@ -1,8 +1,8 @@
 <template>
     <div class="flex justify-center gap-2">
         <UButton 
-            @click="toggleLight"  
-            :active="colorMode.preference === 'light'" 
+            @click="themeStore.toggleLight"  
+            :active="themeStore.colorMode === 'light'" 
             :ui="{base: 'h-12 px-5'}" 
             active-class="bg-primary !text-gray-100"
             inactive-class=""
@@ -11,8 +11,8 @@
             Light
         </UButton>
         <UButton 
-            @click="toggleDark"   
-            :active="colorMode.preference === 'dark'" 
+            @click="themeStore.toggleDark"   
+            :active="themeStore.colorMode === 'dark'" 
             :ui="{base: 'h-12 px-5'}" 
             active-class="bg-primary !text-gray-800"
             inactive-class=""
@@ -24,7 +24,7 @@
  
 </template>
 
-<script setup>
+<!-- <script setup>
 
 const colorMode = useColorMode()
 
@@ -36,4 +36,20 @@ function toggleDark() {
   colorMode.preference = 'dark'
 }
 
+</script> -->
+
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
+import { useThemeStore } from '~/app/stores/theme'
+
+const themeStore = useThemeStore()
+
+onMounted(() => {
+  // make sure Pinia state matches Nuxt color mode on load
+  themeStore.init()
+})
+
+const label = computed(() =>
+  themeStore.colorMode === 'dark' ? 'Switch to Light' : 'Switch to Dark'
+)
 </script>
