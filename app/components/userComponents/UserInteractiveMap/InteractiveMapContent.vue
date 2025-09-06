@@ -2,6 +2,7 @@
 <script setup lang="ts">
   import { useModalStore } from '~/app/stores/modal';
   import type { FormError, FormSubmitEvent } from '@nuxt/ui'
+import { Map } from 'mapbox-gl';
 
   const modalStore = useModalStore();
 
@@ -23,10 +24,9 @@
 </script>
 
 <template>
-  <UCard  variant="subtle" :ui="{ root: 'flex flex-col h-auto md:flex-2 shadow-xl bg-gray-100 dark:bg-gray-950 relative',  body: 'h-80 md:flex-1 flex', footer: 'text-end  py-2' }">
+  <UCard  variant="subtle" :ui="{ root: 'flex flex-col h-auto md:flex-3 shadow-xl bg-gray-100 dark:bg-gray-950 relative md:rounded-none', header: 'md:hidden',  body: 'h-full w-full md:flex-1 flex md:p-0', footer: 'text-end' }">
 
-    <!-- Modal content -->
-    <div v-if="modalStore.isModalOpen" class="absolute inset-0 w-full h-full m-0 flex justify-center items-center z-50 bg-elevated/75 px-10" >
+    <div v-if="modalStore.isModalOpen" class="absolute inset-0 w-full h-full m-0 flex justify-center items-center z-50 bg-elevated/75" >
 
       <div class="absolute top-0 right-0 py-5 px-5">
         <UButton
@@ -67,17 +67,17 @@
 
     
     <template #header>
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center md:hidden md:p-0">
         <span>Interactive Map</span>
         <div class="text-center"><ThemeToggle /></div>
         
       </div>
     </template>
-    <div class="h-80 md:flex-1 md:h-full flex bg-primary relative">
-      <div class="absolute right-0 bottom-0 pe-15 pb-12 z-50"> 
+    <div class="h-80 w-full md:flex-1 md:h-full flex relative md:p-0">
+      <div class="absolute right-0 bottom-0 pe-15 pb-12 z-10"> 
           <UButton  
             icon="i-lucide-plus" 
-            variant="outline"
+            variant="solid"
           />
       </div>
       <Mapbox />
