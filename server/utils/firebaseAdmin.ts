@@ -1,5 +1,7 @@
+import { database } from "firebase-admin";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getDatabase } from "firebase-admin/database";
 import { getFirestore } from "firebase-admin/firestore";
 
 // Load service account credentials from environment variables
@@ -9,6 +11,7 @@ let app;
 if (!getApps().length) {
   app = initializeApp({
     credential: cert(serviceAccount),
+    databaseURL: "https://smart-flood-development-default-rtdb.firebaseio.com"
   });
 } else {
   app = getApps()[0];
@@ -16,4 +19,5 @@ if (!getApps().length) {
 
 // Export the Firebase Admin SDK services you need
 export const adminAuth = getAuth(app);
-export const adminDb = getFirestore(app);
+export const adminDB = getFirestore(app);
+export const adminRTDB = getDatabase(app);
