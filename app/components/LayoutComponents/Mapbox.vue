@@ -31,6 +31,33 @@ export default {
     pitch: 49,
   });
 
+  this.map.setMaxBounds([
+  [124.2200, 13.5700], // SW
+  [124.2330, 13.5880]  // NE
+]);
+
+  this.marker = null;
+
+  this.map.on("click", (e) => {
+    console.log(`Clicked at: ${e.lngLat.lng}, ${e.lngLat.lat}`);
+
+    if (!this.marker) {
+      // Create draggable marker
+      this.marker = new this.mapboxgl.Marker({ color: "red", draggable: true })
+        .setLngLat([e.lngLat.lng, e.lngLat.lat])
+        .setPopup(new this.mapboxgl.Popup().setText("Drag me to set device location!"))
+        .addTo(this.map);
+
+      // Listen for drag end event
+      this.marker.on("dragend", () => {
+        const lngLat = this.marker.getLngLat();
+        console.log(`Marker dragged to: ${lngLat.lng}, ${lngLat.lat}`);
+      });
+    }
+
+    // Update position when map is clicked
+    this.marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+  });
   // 🔑 Force map to resize when viewport changes
   window.addEventListener("resize", () => {
     if (this.map) this.map.resize()
@@ -50,6 +77,7 @@ export default {
       }
     }
   )
+
 },
 
   unmounted() {
