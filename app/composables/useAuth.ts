@@ -19,7 +19,7 @@ export const useAuth = () => {
                 console.error(validated.error.issues);
                 return
             }
-            signInWithEmailAndPassword(auth, email, password)
+            signInWithEmailAndPassword(auth, validated.data.email, validated.data.password)
             .then(() => {
                 navigateTo('/');
             })
@@ -38,7 +38,7 @@ export const useAuth = () => {
             })
         }else {
             console.error("Firebase auth instance is not available yet");
-        }
+        }   
     }
 
     const logout = () => {
