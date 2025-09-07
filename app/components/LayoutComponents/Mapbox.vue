@@ -1,88 +1,155 @@
 <template>
   <ClientOnly>
-    <div ref="mapContainer" class="map-container flex-1"></div>
+    <div class="relative flex-1">
+    <!-- Custom wrapper -->
+      
+      <div ref="geocoderContainer" class="absolute top-2 right-2 md:px-4 md:right-0 md:top-4 w-6/7 md:w-120  z-10"></div>
+      <!-- Map -->
+      <div ref="mapContainer" class="w-full h-full">
+        
+      </div>
+    </div>
   </ClientOnly>
 </template>
 
+
 <script>
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useThemeStore } from "~/app/stores/theme"; // <-- import your Pinia store
+import "mapbox-gl/dist/mapbox-gl.css"
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css"
+import { useThemeStore } from "~/app/stores/useThemeStore"
+import { useMapStore } from "~/app/stores/useMapStore"
 
 export default {
   data() {
-    return { map: null, mapboxgl: null, themeStore: null };
+    return {
+      map: null,
+      mapboxgl: null,
+      themeStore: null,
+      marker: null,
+    }
+
   },
 
   async mounted() {
-  const { public: { mapboxToken } } = useRuntimeConfig();
-  this.themeStore = useThemeStore();
+    const mapStore = useMapStore()
+    const {
+      public: { mapboxToken },
+    } = useRuntimeConfig()
+    this.themeStore = useThemeStore()
 
-  const mod = await import("mapbox-gl");
-  this.mapboxgl = mod.default || mod;
-  this.mapboxgl.accessToken = mapboxToken;
+    const mod = await import("mapbox-gl")
+    this.mapboxgl = mod.default || mod
+    this.mapboxgl.accessToken = mapboxToken
 
-  this.map = new this.mapboxgl.Map({
-    container: this.$refs.mapContainer,
-    style: "mapbox://styles/mapbox/standard",
-    config: { basemap: { lightPreset: this.themeStore.mapLightPreset } },
-    center: { lng: 124.22636, lat: 13.57884 },
-    zoom: 16.7,
-    bearing: 0,
-    pitch: 49,
-  });
+    // Import geocoder dynamically
+    const { default: MapboxGeocoder } = await import(
+      "@mapbox/mapbox-gl-geocoder"
+    )
 
-  this.map.setMaxBounds([
-  [124.2200, 13.5700], // SW
-  [124.2330, 13.5880]  // NE
-]);
+    this.map = new this.mapboxgl.Map({
+      container: this.$refs.mapContainer,
+      style: "mapbox://styles/mapbox/standard",
+      config: { basemap: { lightPreset: this.themeStore.mapLightPreset } },
+      center: [124.22636, 13.57884], // use [lng, lat]
+      zoom: 16.7,
+      bearing: 0,
+      pitch: 49,
+    })
+    
+    // Add Geocoder control
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxToken,
+      mapboxgl: this.mapboxgl,
+      marker: false, // disable default marker
+      placeholder: "Search for an address",
+      id: 'geocoder',
+    })
 
-  this.marker = null;
+    this.$refs.geocoderContainer.appendChild(geocoder.onAdd(this.map))
 
-  this.map.on("click", (e) => {
-    console.log(`Clicked at: ${e.lngLat.lng}, ${e.lngLat.lat}`);
+    // Handle resize
+    window.addEventListener("resize", () => {
+      if (this.map) this.map.resize()
+    })
 
-    if (!this.marker) {
-      // Create draggable marker
-      this.marker = new this.mapboxgl.Marker({ color: "red", draggable: true })
-        .setLngLat([e.lngLat.lng, e.lngLat.lat])
-        .setPopup(new this.mapboxgl.Popup().setText("Drag me to set device location!"))
-        .addTo(this.map);
-
-      // Listen for drag end event
-      this.marker.on("dragend", () => {
-        const lngLat = this.marker.getLngLat();
-        console.log(`Marker dragged to: ${lngLat.lng}, ${lngLat.lat}`);
-      });
-    }
-
-    // Update position when map is clicked
-    this.marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
-  });
-  // 🔑 Force map to resize when viewport changes
-  window.addEventListener("resize", () => {
-    if (this.map) this.map.resize()
-  });
-
-  // Watch theme changes
-  this.$watch(
-    () => this.themeStore.colorMode,
-    () => {
-      if (this.map) {
-        this.map.setConfigProperty(
-          "basemap",
-          "lightPreset",
-          this.themeStore.mapLightPreset
-        )
-        this.map.resize() // also helpful after style update
+    // Watch theme changes
+    watch(
+      () => this.themeStore.colorMode,
+      () => {
+        if (this.map) {
+          this.map.setConfigProperty(
+            "basemap",
+            "lightPreset",
+            this.themeStore.mapLightPreset
+          )
+          this.map.resize()
+        }
       }
-    }
-  )
+    )
 
-},
+    // watch if device is editing 
+    watch(
+      () => mapStore.editEnabled,
+      (enabled) => {
+        if (enabled) {
+          this.enableEditing()
+        } else {
+          this.disableEditing()
+        }
+      }
+    )
+  },
+
+  methods: {
+    async reverseGeocode(lng, lat) {
+      try {
+        const { public: { mapboxToken } } = useRuntimeConfig()
+        const resp = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxToken}`
+        )
+        const data = await resp.json()
+        return data.features?.[0]?.place_name || null
+      } catch (err) {
+        console.error("Reverse geocode failed:", err)
+        return null
+      }
+    },
+
+    async enableEditing() {
+      this.map.on("dblclick", this.handleClick)
+      if (this.marker) this.marker.setDraggable(true) 
+    },
+    async disableEditing() {
+      this.map.off("dblclick", this.handleClick)
+      if (this.marker) this.marker.setDraggable(false)
+    },
+
+    async handleClick(e) {
+      const { lng, lat } = e.lngLat
+      const address = await this.reverseGeocode(lng, lat)
+
+      if (!this.marker) {
+        this.marker = new this.mapboxgl.Marker({ color: "red", draggable: true })
+          .setLngLat([lng, lat])
+          .setPopup(new this.mapboxgl.Popup().setText("Drag me to set device location!"))
+          .addTo(this.map)
+
+        this.marker.on("dragend", async () => {
+          const lngLat = this.marker.getLngLat()
+          const addr = await this.reverseGeocode(lngLat.lng, lngLat.lat)
+          this.marker.setPopup(new this.mapboxgl.Popup().setText(addr || "Unknown"))
+        })
+      }
+
+      this.marker.setLngLat([lng, lat])
+      this.marker.setPopup(new this.mapboxgl.Popup().setText(address || "Unknown"))
+    }
+  },
+  
 
   unmounted() {
-    if (this.map) this.map.remove();
-    this.map = null;
+    if (this.map) this.map.remove()
+    this.map = null
   },
-};
+}
 </script>

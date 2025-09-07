@@ -1,10 +1,11 @@
 
 <script setup lang="ts">
   import { useModalStore } from '~/app/stores/modal';
-  import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import { Map } from 'mapbox-gl';
+  import type { FormError, FormSubmitEvent } from '@nuxt/ui';
+  import { useMapStore } from '~/app/stores/useMapStore';
 
   const modalStore = useModalStore();
+  const mapStore = useMapStore();
 
   const state = reactive({
     deviceName: undefined,
@@ -24,7 +25,12 @@ import { Map } from 'mapbox-gl';
 </script>
 
 <template>
-  <UCard  variant="subtle" :ui="{ root: 'flex flex-col h-auto md:flex-3 shadow-xl bg-gray-100 dark:bg-gray-950 relative md:rounded-none', header: 'md:hidden',  body: 'h-full w-full md:flex-1 flex md:p-0', footer: 'text-end' }">
+  <UCard  variant="subtle" 
+  :ui="
+  { 
+    root: 'flex flex-col h-auto md:flex-3 shadow-xl bg-gray-100 dark:bg-gray-950 relative md:rounded-none', 
+    body: 'h-full w-full p-0 md:flex-1 flex sm:p-0',
+  }">
 
     <div v-if="modalStore.isModalOpen" class="absolute inset-0 w-full h-full m-0 flex justify-center items-center z-50 bg-elevated/75" >
 
@@ -32,6 +38,7 @@ import { Map } from 'mapbox-gl';
         <UButton
         @click="modalStore.toggleModal()"
         icon="i-lucide-circle-x"
+        size="xl"
         color="neutral"
         variant="outline"
         :ui="{
@@ -65,20 +72,42 @@ import { Map } from 'mapbox-gl';
       </UCard>
     </div>
 
-    
-    <template #header>
-      <div class="flex justify-between items-center md:hidden md:p-0">
-        <span>Interactive Map</span>
-        <div class="text-center"><ThemeToggle /></div>
-        
+    <div class="h-80 w-full md:flex-1 md:h-full flex relative sm:p-0">
+      <div class="absolute top-2 left-2 md:top-4 md:left-4 z-10">
+        <UButton  
+          icon="i-lucide-arrow-left" 
+          size="xl"
+          variant="solid"
+          to="/"
+        />
       </div>
-    </template>
-    <div class="h-80 w-full md:flex-1 md:h-full flex relative md:p-0">
+      <div ref="geocoderContainer" class="absolute top-2 right-2 md:px-4 md:py-4 md:right-2 w-2/3 md:w-120  z-10"></div>
+
       <div class="absolute right-0 bottom-0 pe-15 pb-12 z-10"> 
           <UButton  
             icon="i-lucide-plus" 
+            size="xl"
             variant="solid"
           />
+
+          <div class="flex gap-2">
+            <UButton 
+              size="xl"
+              label="Cancel"
+              color="neutral"
+              variant="subtle"
+              class="mt-2"
+            />
+             <UButton  
+              size="xl"
+              label="Save"
+              variant="solid"
+              class="mt-2"
+              @click="mapStore.disableEdit()"
+            />
+          </div>
+    
+        
       </div>
       <Mapbox />
     </div>

@@ -28,41 +28,14 @@
           <div class="flex flex-col gap-2">
             <div class="flex justify-between">
               <p>Gogon Triangle Device</p>
-
-              <!-- implement an user auth that recognizes whether user is admin -->
-              <UButton 
-                color="primary"   
-                icon="i-lucide-edit"
-                @click="modalStore.toggleModal()" 
-                variant="outline">
-                Edit
-              </UButton>
             </div>
 
             <div class="flex justify-between">
               <p>Gogon Centro, Virac, Catanduanes</p>
-
-              <!-- implement an user auth that recognizes whether user is admin -->
-              <UButton 
-                color="primary"   
-                icon="i-lucide-edit"
-                @click="modalStore.toggleModal()" 
-                variant="outline">
-                Edit
-              </UButton>
             </div>
 
             <div class="flex justify-between">
               <p>Active</p>
-
-              <!-- implement an user auth that recognizes whether user is admin -->
-              <UButton 
-                color="primary"   
-                icon="i-lucide-edit"
-                @click="modalStore.toggleModal()" 
-                variant="outline">
-                Edit
-              </UButton>
             </div>
           </div>
 
@@ -98,13 +71,13 @@
                 <p>Status Level(Danger)</p>
                 
                 <!-- implement an user auth that recognizes whether user is admin -->
-                <UButton 
+                <!-- <UButton 
                   color="primary"   
                   icon="i-lucide-edit"
                   @click="modalStore.toggleModal()" 
                   variant="outline">
                   Edit
-                </UButton>
+                </UButton> -->
             </div>
           </div>
            
@@ -112,14 +85,33 @@
          
         </template>
       </UCollapsible>
+
+      <div class="self-end mt-3 md:mt-auto">
+        <UButton 
+          label="Edit Device Information" 
+          color="primary" 
+          variant="outline" 
+          size="md"
+          icon="i-lucide-arrow-right"
+          icon-position="trailing"
+          @click="enableEdit"
+          />
+
+      </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
- import { useModalStore } from '~/app/stores/modal';
+import { useModalStore } from '~/app/stores/modal';
+import { useMapStore } from '~/app/stores/useMapStore';
 
-  const modalStore = useModalStore();
+const modalStore = useModalStore();
+const mapStore = useMapStore();
+
+const enableEdit = () => {
+  mapStore.enableEdit();
+}
 // import { defineShortcuts } from 'path-to-utils' // or auto-import
 
 const openOne = ref(true)
