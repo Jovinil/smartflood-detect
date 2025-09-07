@@ -40,7 +40,7 @@ function toggleDark() {
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import { useThemeStore } from '~/app/stores/theme'
+import { useThemeStore } from '~/app/stores/useThemeStore'
 
 const themeStore = useThemeStore()
 
