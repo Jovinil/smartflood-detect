@@ -3,7 +3,14 @@
 
       <div class="mb-5 flex  items-center">
         <div class="flex-1">
-          <UInput icon="i-lucide-search" size="md" variant="outline" placeholder="Search device name/ID" class="w-full" />
+          <UInputMenu 
+            icon="i-lucide-search"
+            color="neutral"
+            variant="outline"
+            v-model="deviceValue" 
+            value-key="id" 
+            :items="deviceList" 
+          />
         </div>
         
         <div>
@@ -26,16 +33,46 @@
 
         <template #content>
           <div class="flex flex-col gap-2">
-            <div class="flex justify-between">
-              <p>Gogon Triangle Device</p>
+            <div>
+               <p v-if="!mapStore.editEnabled">Gogon Triangle Device</p>
+
+              <UInput 
+                v-else
+                v-model="deviceValue"
+                color="neutral" 
+                variant="outline" 
+                placeholder="Device Name"
+                class="w-full" 
+              />
             </div>
 
-            <div class="flex justify-between">
-              <p>Gogon Centro, Virac, Catanduanes</p>
+            <div>
+              <div class="flex flex-col" v-if="!mapStore.editEnabled">
+                <p>Gogon Centro, Virac, Catanduanes</p>
+                <p>(lng: 123123, lat: 2131231)</p>
+              </div>
+           
+              <UInput 
+                v-else
+                color="neutral"
+                variant="outline"
+                disabled 
+                placeholder="Double click on the map to set / Drag the pin" 
+                class="w-full"
+                />
             </div>
 
-            <div class="flex justify-between">
-              <p>Active</p>
+            <div>
+              <p v-if="!mapStore.editEnabled">Active</p>
+
+              <UInputMenu 
+                v-else
+                color="neutral"
+                variant="outline"
+                v-model="value" 
+                value-key="id" 
+                :items="items" 
+              />
             </div>
           </div>
 
@@ -88,13 +125,13 @@
 
       <div class="self-end mt-3 md:mt-auto">
         <UButton 
-          label="Edit Device Information" 
+          :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
           color="primary" 
           variant="outline" 
           size="md"
           icon="i-lucide-arrow-right"
           icon-position="trailing"
-          @click="enableEdit"
+          @click="mapStore.toggleEdit"
           />
 
       </div>
@@ -109,9 +146,6 @@ import { useMapStore } from '~/app/stores/useMapStore';
 const modalStore = useModalStore();
 const mapStore = useMapStore();
 
-const enableEdit = () => {
-  mapStore.enableEdit();
-}
 // import { defineShortcuts } from 'path-to-utils' // or auto-import
 
 const openOne = ref(true)
@@ -126,4 +160,28 @@ defineShortcuts({
   }
 })
 
+// place JSON shit here
+const items = ref([
+  {
+    label: 'Active',
+    id: 'active'
+  },
+  {
+    label: 'Inactive',
+    id: 'inactive'
+  },
+])
+const value = ref('Active');
+
+const deviceList = ref([
+  {
+    label: 'device 1',
+    id: 'dev1'
+  },
+  {
+    label: 'device 2',
+    id: 'dev2'
+  },
+])
+const deviceValue = ref('device 1');
 </script>
