@@ -6,6 +6,7 @@
 
   const modalStore = useModalStore();
   const mapStore = useMapStore();
+  const user = useCurrentUser();
 
   const state = reactive({
     deviceName: undefined,
@@ -82,8 +83,8 @@
         />
       </div>
       <div ref="geocoderContainer" class="absolute top-2 right-2 md:px-4 md:py-4 md:right-2 w-2/3 md:w-120  z-10"></div>
-
-      <div class="absolute right-0 bottom-0 pe-15 pb-12 z-10" v-if="mapStore.editEnabled"> 
+      
+      <!-- <div class="absolute right-0 bottom-0 pe-15 pb-12 z-10" v-if="mapStore.editEnabled"> 
           <div class="flex gap-2">
             <UButton 
               size="xl"
@@ -99,10 +100,8 @@
               class="mt-2"
               @click="mapStore.disableEdit()"
             />
-          </div>
-    
-        
-      </div>
+          </div>     
+      </div> -->
       <Mapbox />
     </div>
 

@@ -106,15 +106,6 @@
 
             <div class="flex justify-between">
                 <p>Status Level(Danger)</p>
-                
-                <!-- implement an user auth that recognizes whether user is admin -->
-                <!-- <UButton 
-                  color="primary"   
-                  icon="i-lucide-edit"
-                  @click="modalStore.toggleModal()" 
-                  variant="outline">
-                  Edit
-                </UButton> -->
             </div>
           </div>
            
@@ -123,18 +114,26 @@
         </template>
       </UCollapsible>
 
-      <div class="self-end mt-3 md:mt-auto">
+      <div class="self-end mt-3 md:mt-auto flex gap-2" v-if="user">
         <UButton 
-          v-if="user"
-          :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
+          v-if="mapStore.editEnabled"
+          label="Cancel"
           color="primary" 
           variant="outline" 
           size="md"
-          icon="i-lucide-arrow-right"
           icon-position="trailing"
-          @click="mapStore.toggleEdit"
-          />
+          @click="mapStore.discardEdit()"
+        />
 
+        <UButton 
+          :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
+          color="primary" 
+          :variant="mapStore.editEnabled ? 'solid' : 'outline'" 
+          size="md"
+          icon-position="trailing"
+          @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
+        />
+        
       </div>
     </div>
 </template>
@@ -145,7 +144,7 @@ import { useModalStore } from '~/app/stores/modal';
 import { useMapStore } from '~/app/stores/useMapStore';
 import { useCurrentUser } from 'vuefire'
 
-const user = useCurrentUser()
+const user = useCurrentUser();
 const modalStore = useModalStore();
 const mapStore = useMapStore();
 
@@ -174,6 +173,7 @@ const items = ref([
     id: 'inactive'
   },
 ])
+
 const value = ref('Active');
 
 const deviceList = ref([
@@ -186,5 +186,6 @@ const deviceList = ref([
     id: 'dev2'
   },
 ])
+
 const deviceValue = ref('device 1');
 </script>

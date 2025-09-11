@@ -11,8 +11,13 @@ export const useMapStore = defineStore('map', {
         disableEdit(){
             this.editEnabled = false;
         },
-         toggleEdit() {
-            this.editEnabled = !this.editEnabled
+        discardEdit(){
+            this.editEnabled = false;
+            // save shit
+        },
+        saveEdit(){
+            this.editEnabled = false;
+            // save shit
         }
     }
 })
