@@ -8,7 +8,8 @@ const items: DropdownMenuItem[] = [
   },
   {
     label: 'Logout',
-    icon: 'i-lucide-log-out'
+    icon: 'i-lucide-log-out',
+    to: '/admin/logout'
   },
 ]
 </script>

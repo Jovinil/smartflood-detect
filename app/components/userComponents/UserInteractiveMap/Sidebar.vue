@@ -125,6 +125,7 @@
 
       <div class="self-end mt-3 md:mt-auto">
         <UButton 
+          v-if="user"
           :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
           color="primary" 
           variant="outline" 
@@ -142,7 +143,9 @@
 import { ref } from 'vue'
 import { useModalStore } from '~/app/stores/modal';
 import { useMapStore } from '~/app/stores/useMapStore';
+import { useCurrentUser } from 'vuefire'
 
+const user = useCurrentUser()
 const modalStore = useModalStore();
 const mapStore = useMapStore();
 

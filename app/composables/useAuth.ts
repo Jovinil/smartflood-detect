@@ -44,7 +44,7 @@ export const useAuth = () => {
     const logout = () => {
         signOut(auth)
         .then(() => {
-            navigateTo('/admin');
+            navigateTo('/');
         })
         .catch((error) => {
             console.log(error)

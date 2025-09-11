@@ -4,11 +4,19 @@
       <a href="/" class="text-gray-700 dark:text-gray-200 hover:text-primary font-bold">Smartflood Detect</a>
       <nav class="flex items-center">
         <DarkModeToggle />
-        <BaseModal />
 
-        <!-- implement an user auth that recognizes whether user is admin -->
-        <Profile />
+         <!-- implement an user auth that recognizes whether user is admin -->
+        <Profile v-if="user"/>
+
+        <BaseModal  v-else/>
       </nav>
     </div>
   </header>
 </template>
+
+
+<script setup lang="ts">
+import { useCurrentUser } from 'vuefire'
+
+const user = useCurrentUser()
+</script>
