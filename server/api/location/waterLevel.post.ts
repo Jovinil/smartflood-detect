@@ -15,10 +15,10 @@ export default defineEventHandler(async (event) => {
         try {
             const locationPath = adminRTDB.ref(`locations/${validated.data.moduleID}`)
             locationPath.update({
-                waterLevel: validated.data.waterLevel
+                currentWaterLevel: validated.data.waterLevel
             });
 
-            return {message: `Device Water Level Updated.`};
+            return {message: "Device Water Level Updated." , recieved: validated.data};
 
         }catch(error){
             console.error(`${error}`)
