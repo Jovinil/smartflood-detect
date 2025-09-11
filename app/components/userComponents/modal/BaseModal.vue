@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import type { Body } from '#components';
-import ModalBody from './RegistrationModalMainComponents/ModalBody.vue';
-import ModalFooter from './RegistrationModalMainComponents/ModalFooter.vue';
-
-</script>
-
 <template>
   <UModal
     :ui="{
@@ -18,7 +11,7 @@ import ModalFooter from './RegistrationModalMainComponents/ModalFooter.vue';
       class: 'rounded-full'
     }"
   >
-    <UButton icon="" label="Register" color="neutral" variant="subtle" class=" hover:text-primary" />
+    <UButton icon="" label="Register" color="primary" variant="solid" class="" />
 
     <template #body>
       <ModalBody />
