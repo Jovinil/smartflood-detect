@@ -24,16 +24,19 @@ export const useAuth = () => {
                 navigateTo('/');
             })
             .catch((error) => {
-                switch (error) {
+                switch (error.code) {
                     case 'auth/invalid-credential':
                         errorMessage.value = "Incorrect password or email.";
+                        break;
                     case 'auth/too-many-requests':
                         errorMessage.value =  "Too many failed login attempts. Please try again later.";
                         break;
                     case 'auth/network-request-failed':
                         errorMessage.value = "Network error. Please check your connection.";                    
+                        break;
                     default:
                         errorMessage.value = "An unexpected error occured. Please try again.";
+                        break;
                 }
             })
         }else {
