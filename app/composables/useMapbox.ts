@@ -10,6 +10,7 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
   const map = ref<any>(null)
   const mapboxgl = ref<any>(null)
   const marker = ref<any>(null)
+  const address = ref<string | null>('')
 
   const themeStore = useThemeStore()
   const mapStore = useMapStore()
@@ -40,10 +41,15 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
     if (marker.value) marker.value.setDraggable(false)
   }
 
+  async function setAddress(lng: number, lat: number) {
+    address.value = await reverseGeocode(lng, lat)
+  }
+
   // --- Handle Map Click ---
   const handleClick = async (e: any) => {
     const { lng, lat } = e.lngLat
-    const address = await reverseGeocode(lng, lat)
+    await setAddress(lng, lat)
+    mapStore.setPosition(lng, lat)
 
     if (!marker.value) {
       marker.value = new mapboxgl.value.Marker({ color: "red", draggable: true })
@@ -53,17 +59,19 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
 
       marker.value.on("dragend", async () => {
         const lngLat = marker.value.getLngLat()
-        const addr = await reverseGeocode(lngLat.lng, lngLat.lat)
-        marker.value.setPopup(new mapboxgl.value.Popup().setText(addr || "Unknown"))
+        mapStore.setPosition(lng, lat)
+        await setAddress(lng, lat)
+        marker.value.setPopup(new mapboxgl.value.Popup().setText(address || "Unknown"))
 
-        console.log(addr)
       })
     }
-    
-    console.log(address)
 
     marker.value.setLngLat([lng, lat])
     marker.value.setPopup(new mapboxgl.value.Popup().setText(address || "Unknown"))
+  }
+
+  const passValue = async () => {
+
   }
 
   // --- Lifecycle ---
@@ -120,6 +128,18 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
       (enabled) => {
         if (enabled) enableEditing()
         else disableEditing()
+      }
+    )
+
+    watch(
+      () => mapStore.isConfirmed,
+      (saved) => {
+        if (saved) {
+          const wan = mapStore.address = address.value
+          const taw = mapStore.position
+          console.log(wan)
+          console.log(taw)
+        }
       }
     )
   })
