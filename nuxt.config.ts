@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
+    'nuxt-charts',
     'nuxt-vuefire',
     '@pinia/nuxt'
   ],
