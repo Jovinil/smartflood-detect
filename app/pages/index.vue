@@ -8,14 +8,3 @@
     <InteractiveMapCard class="col-span-2 h-94 md:h-150" />
   </div>
 </template>
-
-<script setup>
-// definePageMeta({
-//   layout: 'user-default' 
-// })
-
-import { ref } from 'vue'
-
-const show = ref(false)
-// console.log("test");
-</script>

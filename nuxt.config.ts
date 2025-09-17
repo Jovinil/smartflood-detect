@@ -5,12 +5,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   ssr: false,
-
+  
   dir: {
     pages: './app/pages',
     layouts: './app/layouts',
     middleware: './app/middleware',
   },
+  
   imports: {
     dirs: [
       'app/composables',          // Top-level composables in app folder
@@ -46,7 +47,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   
-   vuefire: {
+  vuefire: {
     config: {
       apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -60,22 +61,25 @@ export default defineNuxtConfig({
       enabled: true,
       // sessionCookie: true, // Consider carefully if session cookies are needed for your use case
     },
-    appCheck: {
-      enabled: true,
-      provider: 'ReCaptchaV3', // Use ReCaptchaV3 for non-enterprise
-      key: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY, // Your reCAPTCHA v3 site key
-      isTokenAutoRefreshEnabled: true,
-      // debug: process.env.NODE_ENV !== 'production', // Enable debug mode in development
-    },
   },
 
-  
   runtimeConfig: {
     public: {
       mapboxToken: process.env.NUXT_PUBLIC_MAPBOX_TOKEN,
+      recaptchaSiteKey: process.env.NUXT_PUBLIC_RECAPTCHA_SITE_KEY,
+      firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
+      firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID
     }
   },
 
   colorMode: { classSuffix: '' },
-
+  
+  devServer: {
+    host: '127.0.0.1',
+    port: 3001 // You can also specify the port here if needed
+  }
 });

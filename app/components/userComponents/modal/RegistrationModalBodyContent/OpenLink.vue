@@ -27,7 +27,7 @@
                 color="primary"
                 variant="solid"
                 label="Open Link"
-                to="/user/registration/register"
+                to="/user/registration/"
             />
         </UButtonGroup>
     </div>
