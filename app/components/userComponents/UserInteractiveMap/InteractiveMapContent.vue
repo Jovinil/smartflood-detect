@@ -1,12 +1,10 @@
 
 <script setup lang="ts">
-  import { useModalStore } from '~/app/stores/modal';
+  import { useModalStore } from '~/app/stores/useModalStore';
   import type { FormError, FormSubmitEvent } from '@nuxt/ui';
   import { useMapStore } from '~/app/stores/useMapStore';
 
   const modalStore = useModalStore();
-  const mapStore = useMapStore();
-  const user = useCurrentUser();
 
   const state = reactive({
     deviceName: undefined,
@@ -17,6 +15,26 @@
   if (!state.deviceName) errors.push({ name: 'deviceName', message: 'Required' })
   return errors
   }
+
+  const onPreSubmit = async (event: any) => {
+    // do something before full submit
+    const confirmed = confirm("Are you sure you want to submit?")
+    if (!confirmed) return // ❌ stop here
+
+    // ✅ proceed to real submit logic
+    await onSubmit(event)
+  }
+
+  const onCancel = () => {
+    console.log("Cancelled")
+  }
+
+  watch(
+    () => modalStore.isConfirmed,
+    (confirmed) => {
+      if (!confirmed) onCancel();
+    }
+  )
 
   const toast = useToast()
   async function onSubmit(event: FormSubmitEvent<typeof state>) {
@@ -37,7 +55,7 @@
 
       <div class="absolute top-0 right-0 py-5 px-5">
         <UButton
-        @click="modalStore.toggleModal()"
+        @click="modalStore.closeModal()"
         icon="i-lucide-circle-x"
         size="xl"
         color="neutral"
@@ -57,15 +75,18 @@
           </span>
           
         </template>
-          <UForm :validate="validate" :state="state" class="flex-1"  @submit="onSubmit">
+          <UForm :validate="validate" :state="state" class="flex-1"  @submit="onPreSubmit">
             <UFormField  label="Device Name" name="deviceName">
               <UInput v-model="state.deviceName" class="w-full mb-3  text-gray-950 dark:text-gray-200" />
             </UFormField>
 
-            <div class="text-end">
-            <UButton type="submit">
-                Submit
-            </UButton>
+            <div class="text-end gap-2">
+              <UButton type="button" variant="outline" class="me-2" @click="modalStore.discardEdit">
+                  Cancel
+              </UButton>
+              <UButton type="submit">
+                  Submit
+              </UButton>
             </div>
            
           </UForm>

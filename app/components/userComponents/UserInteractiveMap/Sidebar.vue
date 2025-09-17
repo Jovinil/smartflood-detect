@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-auto md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-100 dark:bg-gray-950">
+    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-100 dark:bg-gray-950 min-h-0">
 
       <div class="mb-5 flex  items-center">
         <div class="flex-1">
@@ -79,8 +79,6 @@
         </template>
       </UCollapsible>
 
-    
-
       <UCollapsible v-model:open="openTwo" class="flex flex-col gap-2 w-full" 
       :ui="{
 
@@ -114,6 +112,10 @@
         </template>
       </UCollapsible>
 
+      <div class="my-4 flex-1 overflow-y-auto min-h-0">
+        <StatusCard/>
+      </div>
+
       <div class="self-end mt-3 md:mt-auto flex gap-2" v-if="user">
         <UButton 
           v-if="mapStore.editEnabled"
@@ -128,7 +130,7 @@
         <UButton 
           :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
           color="primary" 
-          :variant="mapStore.editEnabled ? 'solid' : 'outline'" 
+          :variant="mapStore.editEnabled ? 'solid' : 'subtle'" 
           size="md"
           icon-position="trailing"
           @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
@@ -139,13 +141,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useModalStore } from '~/app/stores/modal';
+import { ref } from 'vue';
 import { useMapStore } from '~/app/stores/useMapStore';
-import { useCurrentUser } from 'vuefire'
+import { useCurrentUser } from 'vuefire';
 
 const user = useCurrentUser();
-const modalStore = useModalStore();
 const mapStore = useMapStore();
 
 // import { defineShortcuts } from 'path-to-utils' // or auto-import

@@ -13,11 +13,9 @@ export const useMapStore = defineStore('map', {
         },
         discardEdit(){
             this.editEnabled = false;
-            // save shit
         },
         saveEdit(){
             this.editEnabled = false;
-            // save shit
         }
     }
 })
