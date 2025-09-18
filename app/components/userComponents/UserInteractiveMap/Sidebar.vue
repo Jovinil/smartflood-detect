@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-100 dark:bg-gray-950 min-h-0">
+    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0">
 
       <div class="mb-5 flex  items-center">
         <div class="flex-1">
@@ -21,7 +21,7 @@
 
       <UCollapsible v-model:open="openOne" class="flex flex-col gap-2 w-full mb-3" 
       :ui="{
-        content: 'bg-gray-200 dark:bg-gray-700 rounded-sm px-3 py-2'
+        content: 'bg-gray-100 dark:bg-gray-700 rounded-sm px-3 py-2'
       }">
         <UButton
           label="Device Information"
@@ -82,7 +82,7 @@
       <UCollapsible v-model:open="openTwo" class="flex flex-col gap-2 w-full" 
       :ui="{
 
-        content: 'bg-gray-200 dark:bg-gray-700 rounded-sm px-3 py-2'
+        content: 'bg-gray-100 dark:bg-gray-700 rounded-sm px-3 py-2'
       }">
         <UButton
           label="Environmental Data"
