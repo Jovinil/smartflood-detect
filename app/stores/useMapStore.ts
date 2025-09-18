@@ -24,7 +24,7 @@ export const useMapStore = defineStore('map', () => {
     }
 
     const setPosition = (lng: string, lat: string) => {
-        position.value = {lng: lng, lat: lat}
+        position.value = {lng, lat}
     }
 
     return {
