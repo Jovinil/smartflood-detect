@@ -3,7 +3,7 @@
         <UButton 
             @click="themeStore.toggleLight"  
             :active="themeStore.colorMode === 'light'" 
-            :ui="{base: 'h-12 px-5'}" 
+            :ui="{base: 'h-10 px-3'}" 
             active-class="bg-primary !text-gray-100"
             inactive-class=""
             color="primary" 
@@ -13,7 +13,7 @@
         <UButton 
             @click="themeStore.toggleDark"   
             :active="themeStore.colorMode === 'dark'" 
-            :ui="{base: 'h-12 px-5'}" 
+            :ui="{base: 'h-10 px-3'}"
             active-class="bg-primary !text-gray-800"
             inactive-class=""
             color="primary" 
@@ -23,20 +23,6 @@
     </div>
  
 </template>
-
-<!-- <script setup>
-
-const colorMode = useColorMode()
-
-function toggleLight() {
-  colorMode.preference = 'light'
-}
-
-function toggleDark() {
-  colorMode.preference = 'dark'
-}
-
-</script> -->
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
@@ -52,4 +38,5 @@ onMounted(() => {
 const label = computed(() =>
   themeStore.colorMode === 'dark' ? 'Switch to Light' : 'Switch to Dark'
 )
+
 </script>

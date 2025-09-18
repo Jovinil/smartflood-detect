@@ -23,7 +23,7 @@
     <div class="text-end w-full">
       <UButton 
         color="primary" 
-        variant="outline" 
+        variant="solid" 
         :disabled="otpStore.isSending" 
         @click="handleSendOtp()"
         >
