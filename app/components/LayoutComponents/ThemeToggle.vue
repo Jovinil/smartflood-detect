@@ -4,9 +4,9 @@
             @click="themeStore.toggleLight"  
             :active="themeStore.colorMode === 'light'" 
             :ui="{base: 'h-10 px-3'}" 
-            active-class="bg-primary !text-gray-100"
+            active-class="bg-info !text-gray-100"
             inactive-class=""
-            color="primary" 
+            :color="themeStore.colorMode === 'light' ? 'info' : 'primary'" 
             variant="outline">
             Light
         </UButton>
@@ -16,7 +16,7 @@
             :ui="{base: 'h-10 px-3'}"
             active-class="bg-primary !text-gray-800"
             inactive-class=""
-            color="primary" 
+            :color="themeStore.colorMode === 'light' ? 'info' : 'primary'" 
             variant="outline">
             Dark
         </UButton>
