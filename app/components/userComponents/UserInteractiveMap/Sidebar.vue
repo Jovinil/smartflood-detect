@@ -1,9 +1,9 @@
 <template>
-    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0 relative">
+    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 px-6 shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0 relative">
 
       <SidebarModal/>
 
-      <div class="mb-5 flex  items-center">
+      <div class="mb-5 flex items-center">
         <div class="flex-1">
           <UInputMenu 
             icon="i-lucide-search"
@@ -21,7 +21,7 @@
       </div>
 
 
-      <form @submit.prevent="handleUpdateDevice" method="post">
+      <form @submit.prevent="handleUpdateDevice" method="post" class="flex-1 flex flex-col">
       <UCollapsible v-model:open="openOne" class="flex flex-col gap-2 w-full mb-3" 
       :ui="{
         content: 'bg-gray-100 dark:bg-gray-700 rounded-sm px-3 py-2'
@@ -126,12 +126,13 @@
         </template>
       </UCollapsible>
 
-      <div class="my-4 flex-1 overflow-y-auto min-h-0">
+      <div class="my-4 flex-1 overflow-y-auto">
         <StatusCard/>
       </div>
 
+      <!-- button control -->
       <div class="ms-auto mt-3 md:mt-auto flex gap-2" v-if="user">
-        <div class="ms-auto">
+        <div class="ms-auto gap-2 flex">
           <UButton 
             v-if="mapStore.editEnabled"
             label="Cancel"
@@ -149,7 +150,7 @@
             size="md"
             type="submit"
             icon-position="trailing"
-            @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
+            @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit(deviceValue)"
           />
         </div>
       </div>
