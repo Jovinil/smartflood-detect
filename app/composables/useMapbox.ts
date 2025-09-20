@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onUnmounted } from "vue"
 import { useThemeStore } from "~/app/stores/useThemeStore"
 import { useMapStore } from "~/app/stores/useMapStore"
+import { useLocationStore } from "../stores/useLocationStore"
 
 import "mapbox-gl/dist/mapbox-gl.css"
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css"
@@ -9,12 +10,13 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css"
 export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContainer: Ref<HTMLElement | null>) {
   const map = ref<any>(null)
   const mapboxgl = ref<any>(null)
-  const marker = ref<any>(null)
+  const deviceMarkers = ref<{ id: string, marker: any }[]>([])
   const address = ref<string | null>('')
 
   const themeStore = useThemeStore()
   const mapStore = useMapStore()
   const config = useRuntimeConfig()
+  const useLocation = useLocationStore()
 
   // --- Reverse Geocode ---
   const reverseGeocode = async (lng: number, lat: number): Promise<string | null> => {
@@ -32,49 +34,129 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
     }
   }
 
+  // --- Handle map double-click to move marker ---
+const handleMapDblClick = async (e: any) => {
+  map.value?.doubleClickZoom.disable()
+  if (!mapStore.editEnabled) return   // ⬅️ only works when edit is enabled
+
+  const selectedID = mapStore.selectedDevice
+  if (!selectedID) return
+
+  const device = deviceMarkers.value.find(d => d.id === selectedID.moduleID)
+  if (!device) return
+
+  const { lng, lat } = e.lngLat
+  device.marker.setLngLat([lng, lat])
+  mapStore.setPosition(lng, lat)
+  await setAddress(lng, lat)
+
+  const popup = device.marker.getPopup() || new mapboxgl.value.Popup()
+  popup.setText(address.value || "Unknown")
+  device.marker.setPopup(popup)
+
+  editDeviceMarker
+
+  map.value?.doubleClickZoom.enable()
+}
+
   // --- Enable/Disable Editing ---
-  const enableEditing = () => {
-    map.value?.on("dblclick", handleClick)
-    if (marker.value) marker.value.setDraggable(true)
+  const editDeviceMarker = async (e?: any) => {
+    const selectedID = mapStore.selectedDevice
+    if(!selectedID) return
+
+    const device = deviceMarkers.value.find(d => d.id === selectedID.moduleID)
+    if(!device) return
+
+    device.marker.setDraggable(true)
+    
+    // always re-bind dragend listener
+    device.marker.off("dragend")
+    device.marker.on("dragend", async () => {
+      const lngLat = device.marker.getLngLat()
+      mapStore.setPosition(lngLat.lng, lngLat.lat)
+      await setAddress(lngLat.lng, lngLat.lat)
+      device.marker.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
+    })
   }
 
   const disableEditing = () => {
-    map.value?.off("dblclick", handleClick)
-    if (marker.value) marker.value.setDraggable(false)
+    const selectedID = mapStore.selectedDevice
+    if(!selectedID) return
+
+    const device = deviceMarkers.value.find(d => d.id === selectedID.moduleID)
+    if(device){
+      device.marker.setDraggable(false)
+    }  
   }
+
+  
 
   async function setAddress(lng: number, lat: number) {
     address.value = await reverseGeocode(lng, lat)
   }
+  
 
   // --- Handle Map Click ---
-  const handleClick = async (e: any) => {
-    const { lng, lat } = e.lngLat
-    await setAddress(lng, lat)
-    mapStore.setPosition(lng, lat)
+  // const handleClick = async (e: any) => {
+  //   const { lng, lat } = e.lngLat
+  //   await setAddress(lng, lat)
+  //   mapStore.setPosition(lng, lat)
 
-    if (!marker.value) {
-      marker.value = new mapboxgl.value.Marker({ color: "red", draggable: true })
-        .setLngLat([lng, lat])
-        .setPopup(new mapboxgl.value.Popup().setText("Drag me to set device location!"))
+  //   if (!marker.value) {
+  //     marker.value = new mapboxgl.value.Marker({ color: "red", draggable: true })
+  //       .setLngLat([lng, lat])
+  //       .setPopup(new mapboxgl.value.Popup().setText("Drag me to set device location!"))
+  //       .addTo(map.value)
+
+  //     marker.value.on("dragend", async () => {
+  //       const lngLat = marker.value.getLngLat()
+  //       mapStore.setPosition(lngLat.lng, lngLat.lat)
+  //       await setAddress(lngLat.lng, lngLat.lat)
+  //       marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
+        
+  //       console.log(address.value)
+  //     })
+  //   }
+  //   console.log(address.value)
+  //   marker.value.setLngLat([lng, lat])
+  //   marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
+  // }
+
+  const renderDevicePins = (devices: any[]) => {
+    deviceMarkers.value.forEach(m => m.marker.remove())
+    deviceMarkers.value = []
+
+    devices
+    .filter(d => d.longitude !== null && d.latitude !== null)
+    .forEach(d => {
+      const color =
+        d.currentWaterLevelStatus === 'safe'
+          ? 'green'
+          : d.currentWaterLevelStatus === 'warning'
+          ? 'orange'
+          : d.currentWaterLevelStatus === 'danger'
+          ? 'red'
+          : 'blue'
+
+      const marker = new mapboxgl.value.Marker({ color, draggable: false })
+        .setLngLat([d.longitude, d.latitude])
+        .setPopup(
+          new mapboxgl.value.Popup().setHTML(`
+            <div class="text-sm text-gray-800">
+              <strong>${d.deviceName}</strong><br/>
+              Location: ${d.locationName}<br/>
+              Status: ${d.currentWaterLevelStatus || 'Unknown'}<br/>
+              Water Level: ${d.currentWaterLevel ?? 'N/A'}
+            </div>
+          `)
+        )
         .addTo(map.value)
 
-      marker.value.on("dragend", async () => {
-        const lngLat = marker.value.getLngLat()
-        mapStore.setPosition(lngLat.lng, lngLat.lat)
-        await setAddress(lngLat.lng, lngLat.lat)
-        marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
-        
-        console.log(address.value)
+      deviceMarkers.value.push({
+        id: d.moduleID,
+        marker
       })
-    }
-    console.log(address.value)
-    marker.value.setLngLat([lng, lat])
-    marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
-  }
-
-  const passValue = async () => {
-
+    })
   }
 
   // --- Lifecycle ---
@@ -109,6 +191,8 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
       geocoderContainer.value.appendChild(geocoder.onAdd(map.value))
     }
 
+
+
     // Handle resize
     window.addEventListener("resize", () => {
       if (map.value) map.value.resize()
@@ -129,7 +213,11 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
     watch(
       () => mapStore.editEnabled,
       (enabled) => {
-        if (enabled) enableEditing()
+        if (enabled){
+          map.value?.on("click", editDeviceMarker)
+          map.value?.on("dblclick", handleMapDblClick)
+          
+        } 
         else disableEditing()
       }
     )
@@ -148,6 +236,14 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
         }
       }
     )
+
+    watch(
+      () => useLocation.devices,
+      (devices) => {
+        if (map.value) renderDevicePins(devices)
+      },
+      { immediate: true, deep: true }
+    )
   })
 
   onUnmounted(() => {
@@ -157,9 +253,10 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
 
   return {
     map,
-    marker,
+    deviceMarkers,
     reverseGeocode,
-    enableEditing,
+    editDeviceMarker,
     disableEditing,
+    renderDevicePins
   }
 }

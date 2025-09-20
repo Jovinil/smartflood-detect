@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { useMapbox } from "~/app/composables/useMapbox"
+// import { useMapbox } from "~/app/composables/useMapbox"
 
 const mapContainer = ref<HTMLElement | null>(null)
 const geocoderContainer = ref<HTMLElement | null>(null)
