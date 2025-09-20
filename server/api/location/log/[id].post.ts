@@ -2,7 +2,8 @@ import { FieldValue } from "firebase-admin/firestore";
 import z from "zod"
 
 const logSchema = z.object({
-    waterLevel: z.number("must be number")
+    waterLevel: z.number("must be number"),
+    waterLevelStatus: z.number()
 });
 const paramSchema = z.object({
     id: z.string("must be string")
@@ -31,6 +32,7 @@ export default defineEventHandler(async (event) => {
             const locationsRef = adminDB.collection('locations').doc(id).collection('logs').doc(timestamp);
             locationsRef.set({
                 waterLevel: validated.data.waterLevel,
+                waterLevelStatus: validated.data.waterLevelStatus,
                 createdAt: FieldValue.serverTimestamp()
             }, {merge: true})
 

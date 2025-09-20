@@ -8,7 +8,7 @@
             color="neutral"
             variant="outline"
             v-model="deviceValue" 
-            value-key="id" 
+            option-attribute ="deviceName" 
             :items="deviceList" 
           />
         </div>
@@ -19,6 +19,7 @@
       </div>
 
 
+      <form @submit.prevent="handleUpdateDevice" method="post">
       <UCollapsible v-model:open="openOne" class="flex flex-col gap-2 w-full mb-3" 
       :ui="{
         content: 'bg-gray-100 dark:bg-gray-700 rounded-sm px-3 py-2'
@@ -34,11 +35,11 @@
         <template #content>
           <div class="flex flex-col gap-2">
             <div>
-               <p v-if="!mapStore.editEnabled">Gogon Triangle Device</p>
+               <p v-if="!mapStore.editEnabled">{{ deviceValue.deviceName }}</p>
 
               <UInput 
                 v-else
-                v-model="deviceValue"
+                v-model="deviceValue.deviceName"
                 color="neutral" 
                 variant="outline" 
                 placeholder="Device Name"
@@ -48,30 +49,41 @@
 
             <div>
               <div class="flex flex-col" v-if="!mapStore.editEnabled">
-                <p>Gogon Centro, Virac, Catanduanes</p>
-                <p>(lng: 123123, lat: 2131231)</p>
+                <p>{{ deviceValue.locationName }}</p>
+                <p>(lng: {{ deviceValue.longitude }}, lat: {{ deviceValue.latitude }})</p>
               </div>
            
+              <template v-else>
               <UInput 
-                v-else
                 color="neutral"
                 variant="outline"
                 disabled 
+                v-model="mapStore.position.lng"
+                @input="$emit('update:mapStore.position.lng', mapStore.position.lng)"
                 placeholder="Double click on the map to set / Drag the pin" 
                 class="w-full"
                 />
+                <UInput 
+                color="neutral"
+                variant="outline"
+                disabled 
+                v-model="mapStore.position.lat"
+                placeholder="Double click on the map to set / Drag the pin" 
+                class="w-full"
+                />
+                </template>
             </div>
 
             <div>
-              <p v-if="!mapStore.editEnabled">Active</p>
+              <p v-if="!mapStore.editEnabled">{{ deviceValue.deviceStatus }}</p>
 
               <UInputMenu 
                 v-else
                 color="neutral"
                 variant="outline"
-                v-model="value" 
+                v-model="deviceValue.deviceStatus" 
                 value-key="id" 
-                :items="items" 
+                :items="status" 
               />
             </div>
           </div>
@@ -96,14 +108,14 @@
         <template #content>
           <div class="flex flex-col gap-2">
             <div>
-              <p>The water level is 200cm</p>
+              <p>The water level is {{ deviceValue.currentWaterLevel }}cm</p>
             </div>
             <div>
               <p>Date(MM-DD-YY) / time</p>
             </div>
 
             <div class="flex justify-between">
-                <p>Status Level(Danger)</p>
+                <p>Status Level({{ deviceValue.currentWaterLevelStatus }})</p>
             </div>
           </div>
            
@@ -132,21 +144,28 @@
           color="primary" 
           :variant="mapStore.editEnabled ? 'solid' : 'subtle'" 
           size="md"
+          type="submit"
           icon-position="trailing"
           @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
         />
         
       </div>
+      </form>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+// import { ref } from 'vue';
 import { useMapStore } from '~/app/stores/useMapStore';
-import { useCurrentUser } from 'vuefire';
+import { useLocationStore } from '~/app/stores/useLocationStore';
+import { useCurrentUser } from 'vuefire'
 
 const user = useCurrentUser();
 const mapStore = useMapStore();
+const locationStore = useLocationStore();
+const { errorMessage, updateDevice } = useLocation();
+
+await locationStore.fetchDevices()
 
 // import { defineShortcuts } from 'path-to-utils' // or auto-import
 
@@ -162,8 +181,10 @@ defineShortcuts({
   }
 })
 
+// const test = ref(mapStore.position)
+
 // place JSON shit here
-const items = ref([
+const status = ref([
   {
     label: 'Active',
     id: 'active'
@@ -174,18 +195,36 @@ const items = ref([
   },
 ])
 
-const value = ref('Active');
 
-const deviceList = ref([
-  {
-    label: 'device 1',
-    id: 'dev1'
-  },
-  {
-    label: 'device 2',
-    id: 'dev2'
-  },
-])
 
-const deviceValue = ref('device 1');
+const deviceList = ref(locationStore.devices)
+
+const deviceValue = ref(deviceList.value[0] || null);
+
+const handleUpdateDevice = async () => {
+  console.log(`this is the handle update ${mapStore.address}`);
+
+  const newAddress = mapStore.address || deviceValue.value.locationName || "No address found";
+  const newLongitude = mapStore.position.lng || deviceValue.value.longitude;
+  const newLatitude = mapStore.position.lat || deviceValue.value.latitude;
+
+  updateDevice(
+    deviceValue.value.moduleID, 
+    deviceValue.value.deviceName, 
+    newAddress,  
+    newLongitude,
+    newLatitude, 
+    deviceValue.value.deviceStatus
+  );
+  deviceValue.value.label = deviceValue.value.deviceName;
+  deviceValue.value.longitude = newLongitude;
+  deviceValue.value.latitude  = newLatitude;
+  deviceValue.value.locationName = newAddress;
+
+
+  mapStore.position = {lng: null, lat: null};
+  mapStore.address = null;
+  
+  // locationStore.updateDeviceStore(deviceValue.value);
+}
 </script>

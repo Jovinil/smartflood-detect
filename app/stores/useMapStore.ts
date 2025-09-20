@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 
+interface PositionInfo {
+    lng: number | null,
+    lat: number | null
+}
+
 export const useMapStore = defineStore('map', () => {
     const editEnabled = ref(false);
     const isConfirmed = ref(false);
     const address = ref<string | null>('');
-    const position = ref({ lng: '', lat: '' });
+    const position = ref<PositionInfo>({ lng: null, lat: null });
 
     const enableEdit = () =>{
         editEnabled.value = true;
@@ -19,11 +24,11 @@ export const useMapStore = defineStore('map', () => {
     }
 
     const saveEdit = () => {
-        editEnabled.value = true;
+        editEnabled.value = !editEnabled.value;
         isConfirmed.value = true
     }
 
-    const setPosition = (lng: string, lat: string) => {
+    const setPosition = (lng: number, lat: number) => {
         position.value = {lng, lat}
     }
 
