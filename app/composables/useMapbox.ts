@@ -61,15 +61,16 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
 
       marker.value.on("dragend", async () => {
         const lngLat = marker.value.getLngLat()
-        mapStore.setPosition(lng, lat)
-        await setAddress(lng, lat)
-        marker.value.setPopup(new mapboxgl.value.Popup().setText(address || "Unknown"))
-
+        mapStore.setPosition(lngLat.lng, lngLat.lat)
+        await setAddress(lngLat.lng, lngLat.lat)
+        marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
+        
+        console.log(address.value)
       })
     }
-
+    console.log(address.value)
     marker.value.setLngLat([lng, lat])
-    marker.value.setPopup(new mapboxgl.value.Popup().setText(address || "Unknown"))
+    marker.value.setPopup(new mapboxgl.value.Popup().setText(address.value || "Unknown"))
   }
 
   const passValue = async () => {
