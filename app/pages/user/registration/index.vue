@@ -50,8 +50,6 @@ const recaptchaDiv = ref<HTMLElement | null>(null)
 onMounted(() => {
   otpStore.recaptchaContainer = recaptchaDiv.value
   otpStore.initRecaptcha()
-
-  console.log(themeStore.colorMode)
 })
 
 onBeforeUnmount(() => {
@@ -62,7 +60,7 @@ onBeforeUnmount(() => {
 const handleSendOtp = async () => {
   const success = await otpStore.sendCode()
   if (success) {
-    router.push('/user/registration/otp') // 👈 redirect after success
+    router.push('/user/registration/otp') 
   }
 }
 </script>
