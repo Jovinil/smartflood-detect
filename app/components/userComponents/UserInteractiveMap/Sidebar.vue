@@ -1,5 +1,7 @@
 <template>
-    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0">
+    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 rounded-md shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0 relative">
+
+      <SidebarModal/>
 
       <div class="mb-5 flex  items-center">
         <div class="flex-1">
@@ -128,27 +130,28 @@
         <StatusCard/>
       </div>
 
-      <div class="self-end mt-3 md:mt-auto flex gap-2" v-if="user">
-        <UButton 
-          v-if="mapStore.editEnabled"
-          label="Cancel"
-          color="primary" 
-          variant="outline" 
-          size="md"
-          icon-position="trailing"
-          @click="mapStore.discardEdit()"
-        />
+      <div class="ms-auto mt-3 md:mt-auto flex gap-2" v-if="user">
+        <div class="ms-auto">
+          <UButton 
+            v-if="mapStore.editEnabled"
+            label="Cancel"
+            color="primary" 
+            variant="outline" 
+            size="md"
+            icon-position="trailing"
+            @click="mapStore.discardEdit()"
+          />
 
-        <UButton 
-          :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
-          color="primary" 
-          :variant="mapStore.editEnabled ? 'solid' : 'subtle'" 
-          size="md"
-          type="submit"
-          icon-position="trailing"
-          @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
-        />
-        
+          <UButton 
+            :label="mapStore.editEnabled ? 'Save Changes' : 'Edit Device Information'"
+            color="primary" 
+            :variant="mapStore.editEnabled ? 'solid' : 'subtle'" 
+            size="md"
+            type="submit"
+            icon-position="trailing"
+            @click="mapStore.editEnabled ? mapStore.saveEdit() : mapStore.enableEdit()"
+          />
+        </div>
       </div>
       </form>
     </div>
@@ -159,6 +162,7 @@
 import { useMapStore } from '~/app/stores/useMapStore';
 import { useLocationStore } from '~/app/stores/useLocationStore';
 import { useCurrentUser } from 'vuefire'
+import type { FormError, FormSubmitEvent } from '@nuxt/ui';
 
 const user = useCurrentUser();
 const mapStore = useMapStore();
@@ -166,8 +170,6 @@ const locationStore = useLocationStore();
 const { errorMessage, updateDevice } = useLocation();
 
 await locationStore.fetchDevices()
-
-// import { defineShortcuts } from 'path-to-utils' // or auto-import
 
 const openOne = ref(true)
 const openTwo = ref(true)
@@ -181,9 +183,7 @@ defineShortcuts({
   }
 })
 
-// const test = ref(mapStore.position)
 
-// place JSON shit here
 const status = ref([
   {
     label: 'Active',
@@ -227,4 +227,5 @@ const handleUpdateDevice = async () => {
   
   // locationStore.updateDeviceStore(deviceValue.value);
 }
+
 </script>
