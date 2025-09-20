@@ -18,7 +18,7 @@
         <UAccordion 
           v-model="openItem" 
           :collapsible="false" 
-          :items="items"
+          :items="floodMessageAccordionItems"
         >
           <div>
             
@@ -37,7 +37,7 @@
 
           <template #content="{ item }">
             <div class="flex-1 flex flex-col min-h-0">
-              <p class="text-lg">
+              <p class="text-md">
                 {{ item.heading }}
               </p>
               <p class="my-3">
@@ -52,47 +52,43 @@
 </template>
 
 <script setup lang="ts">
-import type { AccordionItem } from '@nuxt/ui';
-import { useCurrentUser } from 'vuefire';
-import { useModalStore } from '~/app/stores/useModalStore';
+import { computed, ref } from 'vue'
+import type { AccordionItem } from '@nuxt/ui'
+import { useCurrentUser } from 'vuefire'
+import { useRoute } from '#imports'
+import { useModalStore } from '~/app/stores/useModalStore'
+import { useFloodMessageStore } from '~/app/stores/useFloodMessageStore'
 
-const user = useCurrentUser();
-const route = useRoute();
-const modalStore = useModalStore();
+const user = useCurrentUser()
+const route = useRoute()
+const modalStore = useModalStore()
+const floodMessageStore = useFloodMessageStore()
 
-const items = ref<AccordionItem[]>([
-  {
-    label: 'Green Status / Safe',
-    icon: 'i-lucide-smile',
-    color: 'text-primary',
-    heading: '✅ SAFE STATUS – NO IMMEDIATE THREAT ✅',
-    content: 'Current monitoring indicates normal water levels in your area. There is no immediate threat of flooding at this time. Residents may continue normal activities but are encouraged to stay informed through official updates from local authorities.',
-  },
+// Map store messages into UAccordion item format
+const floodMessageAccordionItems = computed<AccordionItem[]>(() =>
+  floodMessageStore.floodMessages.map(msg => {
+    let color = ''
+    if (msg.status.includes('Green')) color = 'text-primary'
+    if (msg.status.includes('Orange')) color = 'text-orange-500'
+    if (msg.status.includes('Red')) color = 'text-red-500'
 
-  {
-    label: 'Orange Status / Warning',
-    icon: 'i-lucide-swatch-book',
-    color: 'text-orange-500',
-    heading: '⚠️ WARNING STATUS – BE ALERT AND PREPARED ⚠️',
-    content: 'Rising water levels have been observed in your area. Residents are advised to remain vigilant and prepare for possible evacuation. Secure important belongings, monitor official announcements, and be ready to follow instructions from local authorities.',
-  },
+    return {
+      label: msg.status,
+      icon: '', // optional, you can map different icons per status
+      color,
+      heading: msg.heading,
+      content: msg.body,
+    }
+  })
+)
 
-  {
-    label: 'Red Status / Danger',
-    icon: 'i-lucide-box',
-    color: 'text-red-500',
-    heading: '⚠️ DANGER STATUS – IMMEDIATE ACTION REQUIRED ⚠️',
-    content: 'Severe flooding has been detected in your area. Residents are advised to evacuate immediately and proceed to designated evacuation centers. Please follow official instructions from local authorities and emergency services.'
-  },
-
-])
-
-const openItem = ref('0') 
+const openItem = ref('0')
 const displaybutton = ref(false)
 
-if (route.name  === 'userInteractiveMap') {
+if (route.name === 'userInteractiveMap') {
   openItem.value = ''
   displaybutton.value = true
 }
+
 
 </script>
