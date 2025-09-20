@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
             const logsRef = adminDB.collection('locations').doc(validated.data.id).collection('logs')
             const snapshot = await logsRef.orderBy('createdAt', 'desc').get();
 
-            const logs = snapshot.docs.map(doc => ({id: validated.data.id,waterLevel: doc.data().waterLevel}))
+            const logs = snapshot.docs.map(doc => ({id: validated.data.id, waterLevel: doc.data().waterLevel, waterLevelStatus: doc.data().waterLevelStatuss}))
 
             return logs;
             

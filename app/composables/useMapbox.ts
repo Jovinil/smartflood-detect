@@ -23,7 +23,9 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${config.public.mapboxToken}`
       )
       const data = await resp.json()
-      return data.features?.[0]?.place_name || null
+
+      // setted value of address in mapStore as .text not .place_name
+      return data.features?.[0]?.text || null
     } catch (err) {
       console.error("Reverse geocode failed:", err)
       return null
@@ -137,6 +139,9 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
         if (saved) {
           const wan = mapStore.address = address.value
           const taw = mapStore.position
+          // mapStore.address = ''
+          // mapStore.position = ''
+          mapStore.isConfirmed = false
           console.log(wan)
           console.log(taw)
         }
