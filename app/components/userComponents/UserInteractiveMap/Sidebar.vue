@@ -12,6 +12,7 @@
             v-model="deviceValue" 
             option-attribute ="deviceName" 
             :items="deviceList" 
+            @update:model-value="mapStore.handleDeviceSelect(deviceValue)"
           />
         </div>
         
@@ -19,7 +20,6 @@
           <DarkModeToggle />
         </div>
       </div>
-
 
       <form @submit.prevent="handleUpdateDevice" method="post" class="flex-1 flex flex-col">
       <UCollapsible v-model:open="openOne" class="flex flex-col gap-2 w-full mb-3" 
@@ -106,18 +106,18 @@
           block
         />
 
-
         <template #content>
           <div class="flex flex-col gap-2">
             <div>
               <p>The water level is {{ deviceValue.currentWaterLevel }}cm</p>
             </div>
+           
             <div>
               <p>Date(MM-DD-YY) / time</p>
             </div>
 
             <div class="flex justify-between">
-                <p>Status Level({{ deviceValue.currentWaterLevelStatus }})</p>
+              <p>Status Level ({{ deviceValue.currentWaterLevelStatus }})</p>
             </div>
           </div>
            
@@ -126,7 +126,7 @@
         </template>
       </UCollapsible>
 
-      <div class="my-4 flex-1 overflow-y-auto">
+      <div class="my-4 flex-1 max-h-70 overflow-y-auto">
         <StatusCard/>
       </div>
 

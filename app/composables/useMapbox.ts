@@ -89,6 +89,18 @@ const handleMapDblClick = async (e: any) => {
     }  
   }
 
+  const centerMapOnDevice = () => {
+    const selectedID = mapStore.selectedDevice
+    if(!selectedID) return
+
+    map.value.flyTo({
+      center: [selectedID.longitude, selectedID.latitude], // [longitude, latitude]
+      zoom: 16,           // optional, keep or adjust
+      speed: 300,         // optional, controls animation speed
+      essential: true     // ensures animation works with prefers-reduced-motion
+    })
+  }
+
   const cancelEditDeviceMarker = () => {
     const selectedID = mapStore.selectedDevice
     if(!selectedID) return
@@ -200,11 +212,10 @@ const handleMapDblClick = async (e: any) => {
         if (enabled){
           map.value?.on("click", editDeviceMarker)
           map.value?.on("dblclick", handleMapDblClick)
-        } 
+        }
+        else disableEditing() 
       }
     )
-
-   
 
     watch(
       () => mapStore.isCancelled,
@@ -212,7 +223,18 @@ const handleMapDblClick = async (e: any) => {
         if (cancelled) {
           cancelEditDeviceMarker()
 
+          mapStore.editEnabled = false
           mapStore.isCancelled = false
+        }
+      }
+    )
+
+    watch(
+      () => mapStore.deviceSelected,
+      (selected) => {
+        if (selected) {
+          centerMapOnDevice()
+          mapStore.deviceSelected = false
         }
       }
     )
@@ -236,6 +258,8 @@ const handleMapDblClick = async (e: any) => {
     deviceMarkers,
     reverseGeocode,
     editDeviceMarker,
+    cancelEditDeviceMarker,
+    centerMapOnDevice,
     disableEditing,
     renderDevicePins
   }

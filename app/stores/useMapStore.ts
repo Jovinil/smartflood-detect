@@ -10,6 +10,7 @@ export const useMapStore = defineStore('map', () => {
     const useLocation = useLocationStore();
 
     const editEnabled = ref(false);
+    const deviceSelected = ref(false);
     const isCancelled = ref(false);
     const isConfirmed = ref(false);
     const address = ref<string | null>('');
@@ -24,7 +25,6 @@ export const useMapStore = defineStore('map', () => {
 
     const disableEdit = () => {
         editEnabled.value = false;
-      
     }
 
     const discardEdit = () => {
@@ -41,9 +41,9 @@ export const useMapStore = defineStore('map', () => {
         position.value = {lng, lat}
     }
 
-    const fetch = async () => {
-       const test = useLocation.fetchDevices();
-       return test;
+    const handleDeviceSelect = async (device: any) => {
+        deviceSelected.value = true
+        selectedDevice.value = device
     }
 
     const deviceCoordinates = computed(() =>
@@ -64,6 +64,7 @@ export const useMapStore = defineStore('map', () => {
 
     return {
         editEnabled,
+        deviceSelected,
         isCancelled,
         isConfirmed,
         address,
@@ -75,6 +76,7 @@ export const useMapStore = defineStore('map', () => {
         discardEdit,
         saveEdit,
         setPosition,
+        handleDeviceSelect,
         deviceCoordinates,
         getCoordinates
     }
