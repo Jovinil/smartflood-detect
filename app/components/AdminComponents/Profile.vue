@@ -7,6 +7,11 @@ const items: DropdownMenuItem[] = [
     icon: 'i-lucide-users'
   },
   {
+    label: 'Records',
+    icon: 'i-lucide-mail',
+    to: '/admin/records'
+  },
+  {
     label: 'Logout',
     icon: 'i-lucide-log-out',
     to: '/admin/logout'
