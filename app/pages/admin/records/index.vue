@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent, ref, computed } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
+
+const table = useTemplateRef('table')
 
 type Payment = {
   id: string
@@ -62,7 +65,105 @@ const data = ref<Payment[]>([
     status: 'paid',
     email: 'liam.jones@example.com',
     amount: 720
-  }
+  },
+  {
+    id: '4593',
+    date: '2024-03-08T14:30:00',
+    status: 'refunded',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
+  {
+    id: '4592',
+    date: '2024-03-08T11:00:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
+  {
+    id: '4591',
+    date: '2024-03-07T16:45:00',
+    status: 'failed',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
+  {
+    id: '4590',
+    date: '2024-03-07T09:20:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
+  {
+    id: '4589',
+    date: '2024-03-06T13:15:00',
+    status: 'refunded',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
+  {
+    id: '4588',
+    date: '2024-03-06T10:05:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4587',
+    date: '2024-03-05T15:40:00',
+    status: 'failed',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4586',
+    date: '2024-03-05T12:30:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4585',
+    date: '2024-03-04T14:25:00',
+    status: 'refunded',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4584',
+    date: '2024-03-04T11:15:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4583',
+    date: '2024-03-03T16:50:00',
+    status: 'failed',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4582',
+    date: '2024-03-03T09:30:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },  
+  {
+    id: '4581',
+    date: '2024-03-02T13:20:00',
+    status: 'refunded',
+    email: 'jjames.anderson@example.com',
+    amount: 410
+  },  
+  {
+    id: '4580',
+    date: '2024-03-02T10:10:00',
+    status: 'paid',
+    email: 'johndoe@gmail.com',
+    amount: 410
+  },
 ])
 
 const columns: TableColumn<Payment>[] = [
@@ -137,48 +238,10 @@ const columns: TableColumn<Payment>[] = [
   }
 ]
 
-const expanded = ref({ 1: true })
-
-  const devices = ref([
-    { id: 1, name: "Device 1" },
-    { id: 2, name: "Device 2" },
-    { id: 3, name: "Device 3" },
-    { id: 4, name: "Device 4" },
-    { id: 5, name: "Device 5" },
-    { id: 6, name: "Device 6" },
-    { id: 7, name: "Device 7" },
-    { id: 8, name: "Device 8" },
-    { id: 9, name: "Device 9" },
-    { id: 10, name: "Device 10" },
-    { id: 11, name: "Device 11" },
-    { id: 12, name: "Device 12" },
-    { id: 13, name: "Device 13" },
-    { id: 14, name: "Device 14" },
-    { id: 15, name: "Device 15" },
-    { id: 16, name: "Device 16" },
-    { id: 17, name: "Device 17" },
-    { id: 18, name: "Device 18" },
-    { id: 19, name: "Device 19" },
-    { id: 20, name: "Device 20" },
-    { id: 20, name: "Device 20" },
-    { id: 20, name: "Device 20" },
-    { id: 20, name: "Device 20" },
-    { id: 20, name: "Device 20" },
-    { id: 20, name: "Device 20" },
-    
-    // ...
-    { id: 100, name: "Device 100" }
-    ])
-
-
 // --- Pagination state ---
-const page = ref(1)
-const pageSize = ref(5) // rows per page
-
-// slice data for current page
-const paginatedData = computed(() => {
-  const start = (page.value - 1) * pageSize.value
-  return data.value.slice(start, start + pageSize.value)
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 10
 })
 
 definePageMeta({
@@ -213,11 +276,16 @@ const globalFilter = ref('')
     <!-- Scrollable Table -->
     <div class="flex-1 overflow-y-auto min-h-0">
       <UTable
-        v-model:expanded="expanded"
+        ref="table"
+        v-model:pagination="pagination"
+     
         v-model:global-filter="globalFilter"
-        :data="paginatedData"
+        :data="data"
         :columns="columns"
         :ui="{ tr: 'data-[expanded=true]:bg-elevated/50' }"
+        :pagination-options="{
+          getPaginationRowModel: getPaginationRowModel()
+        }"
         class="w-full"
       >
         <template #expanded="{ row }">
@@ -228,12 +296,12 @@ const globalFilter = ref('')
 
     <!-- Fixed Pagination at Bottom -->
     <div class="shrink-0 border-t border-gray-600 py-2 flex justify-center items-center">
-       <UPagination 
-          v-model:page="page" 
-          size="xl" 
-          :total=paginatedData
-          :page-count="pageSize" 
-        />
+         <UPagination
+        :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        @update:page="(p: any) => table?.tableApi?.setPageIndex(p - 1)"
+      />
     </div>
   </main>
 </div>
