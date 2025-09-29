@@ -10,7 +10,7 @@ export const useMapStore = defineStore('map', () => {
     const useLocation = useLocationStore();
 
     const editEnabled = ref(false);
-    const deviceSelected = ref(false);
+    const isDeviceSelected = ref(false);
     const isCancelled = ref(false);
     const isConfirmed = ref(false);
     const address = ref<string | null>('');
@@ -42,7 +42,7 @@ export const useMapStore = defineStore('map', () => {
     }
 
     const handleDeviceSelect = async (device: any) => {
-        deviceSelected.value = true
+        isDeviceSelected.value = true
         selectedDevice.value = device
     }
 
@@ -64,7 +64,7 @@ export const useMapStore = defineStore('map', () => {
 
     return {
         editEnabled,
-        deviceSelected,
+        isDeviceSelected,
         isCancelled,
         isConfirmed,
         address,
