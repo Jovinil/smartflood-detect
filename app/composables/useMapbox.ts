@@ -54,6 +54,8 @@ const handleMapDblClick = async (e: any) => {
   popup.setText(address.value || "Unknown")
   device.marker.setPopup(popup)
 
+  console.log(address.value)
+
   map.value?.doubleClickZoom.enable()
 }
 
@@ -230,11 +232,11 @@ const handleMapDblClick = async (e: any) => {
     )
 
     watch(
-      () => mapStore.deviceSelected,
+      () => mapStore.isDeviceSelected,
       (selected) => {
         if (selected) {
           centerMapOnDevice()
-          mapStore.deviceSelected = false
+          mapStore.isDeviceSelected = false
         }
       }
     )
