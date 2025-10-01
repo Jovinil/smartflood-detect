@@ -41,6 +41,10 @@ export const useMapStore = defineStore('map', () => {
         position.value = {lng, lat}
     }
 
+    const setAddressStore = (paramAddress: string) => {
+        address.value = paramAddress
+    }
+
     const handleDeviceSelect = async (device: any) => {
         isDeviceSelected.value = true
         selectedDevice.value = device
@@ -77,6 +81,7 @@ export const useMapStore = defineStore('map', () => {
         saveEdit,
         setPosition,
         handleDeviceSelect,
+        setAddressStore,
         deviceCoordinates,
         getCoordinates
     }

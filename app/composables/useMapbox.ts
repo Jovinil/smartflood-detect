@@ -49,12 +49,10 @@ const handleMapDblClick = async (e: any) => {
   device.marker.setLngLat([lng, lat])
   mapStore.setPosition(lng, lat)
   await setAddress(lng, lat)
-
+  
   const popup = device.marker.getPopup() || new mapboxgl.value.Popup()
   popup.setText(address.value || "Unknown")
   device.marker.setPopup(popup)
-
-  console.log(address.value)
 
   map.value?.doubleClickZoom.enable()
 }
@@ -120,6 +118,7 @@ const handleMapDblClick = async (e: any) => {
 
   async function setAddress(lng: number, lat: number) {
     address.value = await reverseGeocode(lng, lat)
+    mapStore.setAddressStore(address.value!)
   }
 
   const renderDevicePins = (devices: any[]) => {
