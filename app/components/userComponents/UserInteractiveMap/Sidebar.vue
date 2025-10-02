@@ -10,8 +10,8 @@
             color="neutral"
             variant="outline"
             v-model="deviceValue" 
-            option-attribute ="deviceName" 
-            :items="deviceList" 
+            option-attribute ="deviceName"
+            :items="devices"
             @update:model-value="mapStore.handleDeviceSelect(deviceValue)"
           />
         </div>
@@ -109,7 +109,7 @@
         <template #content>
           <div class="flex flex-col gap-2">
             <div>
-              <p>The water level is {{ deviceValue.currentWaterLevel }}cm</p>
+              <p>The water level is {{ deviceValue?.currentWaterLevel }}cm</p>
             </div>
            
             <div>
@@ -117,7 +117,7 @@
             </div>
 
             <div class="flex justify-between">
-              <p>Status Level ({{ deviceValue.currentWaterLevelStatus }})</p>
+              <p>Status Level ({{ deviceValue?.currentWaterLevelStatus }})</p>
             </div>
           </div>
            
@@ -169,8 +169,7 @@ const user = useCurrentUser();
 const mapStore = useMapStore();
 const locationStore = useLocationStore();
 const { errorMessage, updateDevice } = useLocation();
-
-await locationStore.fetchDevices()
+const { devices, device } = useLocationStore();
 
 const openOne = ref(true)
 const openTwo = ref(true)
@@ -198,12 +197,12 @@ const status = ref([
 
 
 
-const deviceList = ref(locationStore.devices)
-
-const deviceValue = ref(deviceList.value[0] || null);
+const deviceValue = computed({
+  get: () => locationStore.device,
+  set: (val) => locationStore.setDevice(val!)
+})
 
 const handleUpdateDevice = async () => {
-  console.log(`this is the handle update ${mapStore.address}`);
 
   const newAddress = mapStore.address || deviceValue.value.locationName || "No address found";
   const newLongitude = mapStore.position.lng || deviceValue.value.longitude;
@@ -225,6 +224,8 @@ const handleUpdateDevice = async () => {
 
   mapStore.position = {lng: null, lat: null};
   mapStore.address = null;
+
+  await locationStore.fetchDevicesLazy(true);
   
   // locationStore.updateDeviceStore(deviceValue.value);
 }

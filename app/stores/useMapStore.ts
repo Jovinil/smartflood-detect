@@ -7,7 +7,7 @@ interface PositionInfo {
 }
 
 export const useMapStore = defineStore('map', () => {
-    const useLocation = useLocationStore();
+    const locationStore = useLocationStore();
 
     const editEnabled = ref(false);
     const isDeviceSelected = ref(false);
@@ -15,12 +15,13 @@ export const useMapStore = defineStore('map', () => {
     const isConfirmed = ref(false);
     const address = ref<string | null>('');
     const position = ref<PositionInfo>({ lng: null, lat: null });
-    const selectedDevice = ref<any | null>(null)
+    const selectedDevice = ref<any | null>(null);
+    let tempDeviceData: any;
 
     const enableEdit = (device: any) =>{
         editEnabled.value = true;
-
         selectedDevice.value = device;
+        tempDeviceData = JSON.parse(JSON.stringify(device))
     }
 
     const disableEdit = () => {
@@ -30,11 +31,12 @@ export const useMapStore = defineStore('map', () => {
     const discardEdit = () => {
         editEnabled.value = false;
         isCancelled.value = true;
+        locationStore.setDevice(JSON.parse(JSON.stringify(tempDeviceData)))
     }
 
     const saveEdit = () => {
         editEnabled.value = false;
-        isConfirmed.value = true
+        isConfirmed.value = true;
     }
 
     const setPosition = (lng: number, lat: number) => {
@@ -51,7 +53,7 @@ export const useMapStore = defineStore('map', () => {
     }
 
     const deviceCoordinates = computed(() =>
-    useLocation.devices
+    locationStore.devices
       .filter(device => device.longitude !== null && device.latitude !== null)
       .map(device => ({
         moduleID: device.moduleID,
@@ -62,7 +64,7 @@ export const useMapStore = defineStore('map', () => {
     )
 
     function getCoordinates(moduleID: string) {
-        const device = useLocation.devices.find(d => d.moduleID === moduleID)
+        const device = locationStore.devices.find(d => d.moduleID === moduleID)
         return device ? { lng: device.longitude, lat: device.latitude } : null
     }
 
