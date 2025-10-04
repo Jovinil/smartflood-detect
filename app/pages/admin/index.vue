@@ -30,7 +30,12 @@
       <!-- UI NEEDS WORK -->
     <p class="text-[12px] text-gray-700 dark:text-red-400 mb-2">{{ errorMessage }}</p>
     <div class="text-end w-full">
-      <UButton color="primary" variant="outline" type="submit">Login</UButton>
+      <UButton 
+        :color="themeStore.colorMode === 'light' ? 'info' : 'primary'" 
+        variant="outline" 
+        type="submit">
+        Login
+      </UButton>
     </div>
   </form>
   
@@ -39,16 +44,20 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '~/app/stores/useThemeStore';
+
 definePageMeta({
   layout: 'login' 
 })
+
+const themeStore = useThemeStore();
 
 const email = ref('')
 const password = ref('')
 const { errorMessage, login} = useAuth();
 
 const handleLogin = async () => {
-  await(login(email.value, password.value))
+  await(login(email.value, password.value));
 }
 
 </script>

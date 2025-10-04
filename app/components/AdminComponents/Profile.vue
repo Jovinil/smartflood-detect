@@ -3,8 +3,9 @@ import type { DropdownMenuItem } from '@nuxt/ui'
 
 const items: DropdownMenuItem[] = [
   {
-    label: 'Edit Profile',
-    icon: 'i-lucide-users'
+    label: 'Change Password',
+    icon: 'i-lucide-users',
+    to: '/admin/change-password'
   },
   {
     label: 'Records',
