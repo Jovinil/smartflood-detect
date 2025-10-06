@@ -10,7 +10,7 @@
             label="Edit Flood Status Message"
             color="neutral"
             variant="outline"
-            @click="modalStore.openModal()"
+            @click="modalStore.openModal(floodMessageStore.floodMessage)"
           />
         </div>
       </template>
@@ -68,10 +68,12 @@ const floodMessageStore = useFloodMessageStore()
 const floodMessageAccordionItems = computed<AccordionItem[]>(() =>
   floodMessageStore.floodMessages.map(msg => {
     let color = ''
-    if (msg.status.includes('Green')) color = 'text-primary'
-    if (msg.status.includes('Orange')) color = 'text-orange-500'
-    if (msg.status.includes('Red')) color = 'text-red-500'
-
+    // if (msg.status.includes('Green')) color = 'text-primary'
+    // if (msg.status.includes('Orange')) color = 'text-orange-500'
+    // if (msg.status.includes('Red')) color = 'text-red-500'
+    if (msg.id === 0) color =  'text-primary'
+    if (msg.id === 1) color = 'text-orange-500'
+    if (msg.id === 2) color = 'text-red-500'
     return {
       label: msg.status,
       icon: '', // optional, you can map different icons per status

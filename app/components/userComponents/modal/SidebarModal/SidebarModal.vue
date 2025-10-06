@@ -23,14 +23,14 @@
           </span>
           
         </template>
-        <UForm class="flex-1">
-            <UInputMenu v-model="floodMessageStore.floodStatusValue" :items="floodMessageStore.floodStatusItems" :ui="{ root: 'w-full' }"/>
+        <UForm class="flex-1" :state="tempFloodMessage" @submit="handleMessageUpdate">
+            <UInputMenu v-model="tempFloodMessage" :items="floodMessageStore.floodMessages" @update:model-value="modalStore.setTempFLoodMessage(floodMessageStore.floodMessage)" :ui="{ root: 'w-full' }"/>
 
             <UFormField label="Heading Message" :ui="{ root: 'mt-3 text-md' }"/>
-            <UInput v-model="floodMessageStore.floodHeadingMessage" autoresize class="w-full text-md text-gray-950 dark:text-gray-200"  />
+            <UInput v-model="tempFloodMessage.heading" autoresize class="w-full text-md text-gray-950 dark:text-gray-200"  />
             
             <UFormField label="Message Body" :ui="{ root: 'mt-3 text-md' }" />
-            <UTextarea v-model="floodMessageStore.floodMessageBody" autoresize :ui="{ root: 'w-full',}" size="xl" />
+            <UTextarea v-model="tempFloodMessage.body" autoresize :ui="{ root: 'w-full',}" size="xl" />
         <div class="text-end gap-2 mt-3">
             <UButton type="button" variant="outline" class="me-2" @click="modalStore.discardEdit">
                 Cancel
@@ -50,7 +50,45 @@
 <script setup lang="ts">
 import { useModalStore } from '~/app/stores/useModalStore';
 import { useFloodMessageStore } from '~/app/stores/useFloodMessageStore';
-
-const modalStore = useModalStore();
+import type { Form, FormSubmitEvent } from '@nuxt/ui';
+import z from 'zod';
+import { modal } from '#build/ui';
 const floodMessageStore = useFloodMessageStore();
+const { floodHeadingMessage, floodMessageBody, floodStatusValue } = storeToRefs(floodMessageStore);
+const modalStore = useModalStore();
+
+const tempFloodMessage = computed({
+  get: () => floodMessageStore.floodMessage,
+  set: (val) => floodMessageStore.setFloodMessage(val)
+})
+
+// const formState = reactive({
+//   status: tempFloodMessage.value.status,
+//   heading: tempFloodMessage.value.heading,
+//   message: tempFloodMessage.value.body
+// })
+
+
+const messageSchema = z.object({
+    status: z.literal(['safe', 'warning', 'danger']),
+    // status: z.string(),
+    heading: z.string(),
+    body:z.string()
+});
+
+type Schema = z.infer<typeof messageSchema>
+
+
+
+
+const handleMessageUpdate = async (event: FormSubmitEvent<Schema>) => {
+  console.log(event.data.status)
+  floodMessageStore.updateFloodMessage(event.data.status, event.data.heading,  event.data.body)
+  // floodMessageStore.saveEdit(event.data.status, event.data.heading, event.data.message);
+  // tempFloodMessage.value.heading = event.data.heading;
+  // tempFloodMessage.value.body = event.data.message;
+
+  await floodMessageStore.fetchMessages()
+  modalStore.closeModal();
+}
 </script>
