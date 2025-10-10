@@ -88,7 +88,6 @@ const openItem = ref('0')
 const displaybutton = ref(false)
 
 if (route.name === 'userInteractiveMap') {
-  openItem.value = ''
   displaybutton.value = true
 }
 
