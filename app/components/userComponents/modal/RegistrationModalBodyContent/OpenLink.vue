@@ -6,7 +6,7 @@
                 icon="i-lucide-search" 
                 color="neutral"  
                 variant="outline" 
-                value="https://smartflood-detect.xyz" 
+                value="https://smartflood-detect.vercel.app/user/registration/" 
                 disabled 
                 v-model="value"
                 :ui="{ trailing: 'pr-0.5' }"
