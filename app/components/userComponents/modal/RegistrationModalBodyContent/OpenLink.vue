@@ -6,7 +6,7 @@
                 icon="i-lucide-search" 
                 color="neutral"  
                 variant="outline" 
-                value="https://smartflood-detect.vercel.app/user/registration/" 
+                :value=value 
                 disabled 
                 v-model="value"
                 :ui="{ trailing: 'pr-0.5' }"
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
 
-const value = ref('https://smartflood-detect.xyz')
+const value = ref('https://smartflood-detect.vercel.app/user/registration/')
 
 const { copy, copied } = useClipboard()
 </script>   
