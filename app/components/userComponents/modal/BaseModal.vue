@@ -19,11 +19,11 @@
         { label: 'Link Button', slot: 'link' },
       ]"
       :ui="{
-        root: 'flex-col-reverse h-full',
+        root: 'flex-col-reverse h-full py-3',
         content: 'h-full flex justify-center align-center'
       }">
         <template #qr>
-          <div class="flex-1 flex flex-col gap-2 items-center justify-center px-6">
+          <div class="flex-1 flex flex-col gap-2 items-center justify-center px-6 mt-6">
               <QRCode/>
           </div>
         </template>
