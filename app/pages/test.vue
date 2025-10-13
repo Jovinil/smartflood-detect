@@ -2,16 +2,11 @@
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent, ref, computed } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
-import { useRecordsStore } from '~/app/stores/useRecordsStore'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 
 const table = useTemplateRef('table')
-
-const recordsStore = useRecordsStore()
-
-const useRecords = useRecordsStore();
 
 type Payment = {
   id: string
@@ -257,18 +252,9 @@ onMounted(() => {
 console.log(data.value.length)
 })
 
+
 const globalFilter = ref('')
 </script>
-
-<!-- <script setup lang="ts">
-import { getPaginationRowModel } from '@tanstack/vue-table'
-
-const { data, pagination, globalFilter, recordsStore } = useRecords()
-const { columns } = useRecordsColumn()
-
-const table = useTemplateRef('table')
-
-</script> -->
 
 <template>
 <div class="flex flex-col h-screen px-5 py-6">
@@ -303,25 +289,7 @@ const table = useTemplateRef('table')
         class="w-full"
       >
         <template #expanded="{ row }">
-          <div class="flex items-center justify-center gap-5">
-
-            <div class="flex flex-col">
-              <p>{{ row.original.id }}</p>
-            
-              <p>{{ row.original.date }}</p>
-              
-              <p>{{ row.original.status }}</p>
-              
-              <p>{{ row.original.email }}</p>
-              
-              <p>{{ row.original.amount }}</p>  
-            </div>
-          
-            <UButton label="See previous Data" @click="recordsStore.visibleContainer" />
-
-            <div v-if="recordsStore.seePrevious">awda</div>
-            
-          </div>
+          <pre>{{ row.original }}</pre>
         </template>
       </UTable>
     </div>

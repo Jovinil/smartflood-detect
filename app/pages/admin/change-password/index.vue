@@ -72,7 +72,7 @@
 
   
     <div class="text-end w-full">
-      <UButton color="primary" variant="solid" >Save</UButton>
+      <UButton type="submit" color="primary" variant="solid" >Save</UButton>
     </div>
   
   </UForm>

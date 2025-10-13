@@ -8,11 +8,11 @@ interface AreaChartItem {
 const categories: ComputedRef<Record<string, BulletLegendItemInterface>> =
   computed(() => ({
     desktop: {
-      name: 'Desktop',
+      name: 'Device 1',
       color: '#3b82f6',
     },
     mobile: {
-      name: 'Mobile',
+      name: 'Device 2',
       color: '#22c55e',
     },
   }))

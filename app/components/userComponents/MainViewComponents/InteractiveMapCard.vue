@@ -9,8 +9,14 @@
     </div>
    
     <template #footer>
-      <UButton to="/userInteractiveMap" color="neutral" variant="outline">View</UButton>
+      <NuxtLink to="/userInteractiveMap" color="neutral" variant="outline">View</NuxtLink>
     </template>
   </UCard>
 
 </template>
+
+<script>
+
+import { useRouter } from 'vue-router';
+
+</script>

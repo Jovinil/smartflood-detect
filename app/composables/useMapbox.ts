@@ -12,6 +12,7 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
   const mapboxgl = ref<any>(null)
   const deviceMarkers = ref<{ id: string, marker: any, originalLngLat?: {lng: number, lat: number} }[]>([])
   const address = ref<string | null>('')
+  const mapLoaded = ref(false)
 
   const themeStore = useThemeStore()
   const mapStore = useMapStore()
@@ -92,6 +93,18 @@ const handleMapDblClick = async (e: any) => {
   const centerMapOnDevice = () => {
     const selectedID = mapStore.selectedDevice
     if(!selectedID) return
+
+    if (!map.value || !mapLoaded.value) {
+      console.warn("Map not ready yet. Retrying centerMapOnDevice soon...")
+      // Retry once the map finishes loading
+      const stop = watch(mapLoaded, (loaded) => {
+        if (loaded) {
+          stop()
+          centerMapOnDevice()
+        }
+      })
+      return
+    }
 
     map.value.flyTo({
       center: [selectedID.longitude, selectedID.latitude], // [longitude, latitude]
@@ -190,6 +203,12 @@ const handleMapDblClick = async (e: any) => {
       geocoderContainer.value.appendChild(geocoder.onAdd(map.value))
     }
 
+    map.value.on("load", () => {
+      mapLoaded.value = true;
+      // safe to use map functions now
+      centerMapOnDevice();
+    })
+
     // Handle resize
     window.addEventListener("resize", () => {
       if (map.value) map.value.resize()
@@ -250,8 +269,11 @@ const handleMapDblClick = async (e: any) => {
   })
 
   onUnmounted(() => {
-    if (map.value) map.value.remove()
-    map.value = null
+    if (map.value) {
+      map.value.remove()
+      map.value = null
+    }
+    mapLoaded.value = false
   })
 
   return {
