@@ -9,7 +9,7 @@
     </div>
    
     <template #footer>
-      <NuxtLink to="/userInteractiveMap" color="neutral" variant="outline">View</NuxtLink>
+      <UButton as="NuxtLink" to="/userInteractiveMap" color="neutral" variant="outline" >View</UButton>
     </template>
   </UCard>
 

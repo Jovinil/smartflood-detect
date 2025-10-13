@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
         const messageRef = adminDB.collection('messages').doc(validated.data.status)
         messageRef.set({
             heading: validated.data.heading,
-            message: validated.data.message
+            body: validated.data.message
         }, {merge: true});
         
     }catch(error){
