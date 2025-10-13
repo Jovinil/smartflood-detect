@@ -1,6 +1,6 @@
 <template>
  
-  <UCard variant="subtle" :ui="{ root: 'flex flex-col shadow-xl mb-5', body: 'flex-1 flex', footer: 'text-end  py-2' }" >
+  <UCard variant="subtle" :ui="{ root: 'flex flex-col shadow-xl mb-5', body: 'flex-1 flex !p-0', footer: 'text-end  py-2' }" >
     <template #header>
       Interactive Map
     </template>

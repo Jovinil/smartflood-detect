@@ -27,7 +27,7 @@
 .mapboxgl-ctrl-geocoder--button {
   width: 1.25rem !important;   /* w-5 */
   height: 1.25rem !important;  /* h-5 */
-  top: 50% !important;
+  top: 55% !important;
   transform: translateY(-50%); /* center vertically */
 }
 
@@ -39,9 +39,19 @@
     padding-left: 2.5rem !important; /* pl-10 */
   }
 
-  .mapboxgl-ctrl-geocoder--icon,
-  .mapboxgl-ctrl-geocoder--button {
+  .mapboxgl-ctrl-geocoder--icon
+  {
+    top: 50% !important;
+    /* transform: translateY(-30%);  */
     width: 1.5rem !important;   /* w-6 */
     height: 1.5rem !important;  /* h-6 */
   }
+
+  .mapboxgl-ctrl-geocoder--button {
+  top: 75% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 }
