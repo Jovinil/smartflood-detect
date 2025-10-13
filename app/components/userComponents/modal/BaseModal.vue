@@ -23,7 +23,7 @@
         content: 'h-full flex justify-center align-center'
       }">
         <template #qr>
-          <div class="flex-1 flex flex-col gap-2 items-center justify-center px-6 py-3">
+          <div class="flex-1 flex flex-col gap-2 items-center justify-center px-6">
               <QRCode/>
           </div>
         </template>
