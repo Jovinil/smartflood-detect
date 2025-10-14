@@ -61,33 +61,38 @@ export const useAuthOtpStore = defineStore('authOtp', () => {
 
   // Send OTP SMS
   const sendCode = async () => {
-    const auth = getAuth();
-    errorMessage.value = '';
-    isSending.value = true;
+  const auth = getAuth()
+  errorMessage.value = ''
+  isSending.value = true
 
-    try {
-      if (!recaptchaVerifier) throw new Error('Recaptcha not initialized');
-      if (!phoneNumber.value) throw new Error('Phone number is empty');
+  try {
+    if (!recaptchaVerifier) throw new Error('Recaptcha not initialized')
+    if (!phoneNumber.value) throw new Error('Phone number is empty')
 
-      // Ensure E.164 format (ex: +639xxxxxxxxx for PH)
-      confirmationResult.value = await signInWithPhoneNumber(
-        auth,
-        phoneNumber.value,
-        recaptchaVerifier
-      );
+    // Sanitize and normalize
+    let cleanPhone = phoneNumber.value.trim()
+    if (cleanPhone.startsWith('+63')) cleanPhone = cleanPhone.slice(3)
+    else if (cleanPhone.startsWith('0')) cleanPhone = cleanPhone.slice(1)
 
-      return true;
-    } catch (err: any) {
-      console.error('Error sending code:', err);
-      errorMessage.value = err.message || 'Failed to send OTP';
+    const fullPhoneNumber = `+63${cleanPhone}`
 
-      return false;
-    } finally {
-      isSending.value = false;
+    confirmationResult.value = await signInWithPhoneNumber(
+      auth,
+      fullPhoneNumber,
+      recaptchaVerifier
+    )
 
-    }
-
+    console.log('OTP sent to:', fullPhoneNumber)
+    return true
+  } catch (err: any) {
+    console.error('Error sending code:', err)
+    errorMessage.value = err.message || 'Failed to send OTP'
+    return false
+  } finally {
+    isSending.value = false
   }
+}
+
 
   // Verify OTP
   const verifyCode = async () => {

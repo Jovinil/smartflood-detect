@@ -66,18 +66,6 @@ const router = useRouter();
 const otpStore = useAuthOtpStore();
 const recaptchaDiv = ref<HTMLElement | null>(null)
 
-const hi = () => {
-  console.log("code", otpStore.verificationCodeString)
-}
-
-watch(() => otpStore.verificationCode, (val) => {
-  console.log('verificationCode array:', val)
-})
-
-watch(() => otpStore.verificationCodeString, (val) => {
-  console.log('verificationCodeString:', val)
-})
-
 const handleVerifyCode = async () => {
   const success = await otpStore.verifyCode()
   if (success) {
