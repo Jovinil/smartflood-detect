@@ -1,6 +1,6 @@
 <template>
    <UCard variant="subtle" :ui="{  
-      root: 'w-full flex flex-col shadow-xl ',
+      root: 'w-full flex flex-col shadow-xl',
       header: `flex ${isUserInteractiveMap && user ? 'items-center justify-around !px-2' : ''}`,
       body: `flex-1 flex flex-col ${isUserInteractiveMap ? 'overflow-y-auto max-h-70' : ''}`}"
       >
