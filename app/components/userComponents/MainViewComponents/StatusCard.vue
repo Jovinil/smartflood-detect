@@ -1,18 +1,21 @@
 <template>
-   <UCard variant="subtle" :ui="{  root: 'w-full flex flex-col shadow-xl overflow-y-auto', header: '', body: 'flex-1 flex flex-col' }">
+   <UCard variant="subtle" :ui="{  
+      root: 'w-full flex flex-col shadow-xl ',
+      header: `flex ${isUserInteractiveMap && user ? 'items-center justify-around !px-2' : ''}`,
+      body: `flex-1 flex flex-col ${isUserInteractiveMap ? 'overflow-y-auto max-h-70' : ''}`}"
+      >
       <template #header>
         
-        <div class="flex items-center justify-between">
           <p>Flood Status</p>
           
           <UButton
-            v-if="displaybutton && user"
+            v-if="isUserInteractiveMap && user"
             label="Edit Flood Status Message"
             color="neutral"
             variant="outline"
             @click="modalStore.openModal(floodMessageStore.floodMessage)"
           />
-        </div>
+        
       </template>
       <div class="flex-1">
         <UAccordion 
@@ -85,10 +88,10 @@ const floodMessageAccordionItems = computed<AccordionItem[]>(() =>
 )
 
 const openItem = ref('0')
-const displaybutton = ref(false)
+const isUserInteractiveMap = ref(false)
 
 if (route.name === 'userInteractiveMap') {
-  displaybutton.value = true
+  isUserInteractiveMap.value = true
 }
 
 

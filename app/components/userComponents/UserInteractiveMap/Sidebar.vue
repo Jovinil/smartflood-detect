@@ -126,7 +126,7 @@
         </template>
       </UCollapsible>
 
-      <div class="my-4 flex-1 max-h-70 overflow-y-auto">
+      <div class="my-4 flex-1">
         <StatusCard/>
       </div>
 
