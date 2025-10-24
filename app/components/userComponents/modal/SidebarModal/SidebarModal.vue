@@ -62,13 +62,6 @@ const tempFloodMessage = computed({
   set: (val) => floodMessageStore.setFloodMessage(val)
 })
 
-// const formState = reactive({
-//   status: tempFloodMessage.value.status,
-//   heading: tempFloodMessage.value.heading,
-//   message: tempFloodMessage.value.body
-// })
-
-
 const messageSchema = z.object({
     status: z.literal(['safe', 'warning', 'danger']),
     // status: z.string(),
@@ -84,9 +77,6 @@ type Schema = z.infer<typeof messageSchema>
 const handleMessageUpdate = async (event: FormSubmitEvent<Schema>) => {
   console.log(event.data.status)
   floodMessageStore.updateFloodMessage(event.data.status, event.data.heading,  event.data.body)
-  // floodMessageStore.saveEdit(event.data.status, event.data.heading, event.data.message);
-  // tempFloodMessage.value.heading = event.data.heading;
-  // tempFloodMessage.value.body = event.data.message;
 
   await floodMessageStore.fetchMessages()
   modalStore.closeModal();

@@ -9,8 +9,13 @@ const items: DropdownMenuItem[] = [
   },
   {
     label: 'Records',
-    icon: 'i-lucide-mail',
+    icon: 'i-lucide-archive',
     to: '/admin/records'
+  },
+  {
+    label: 'History',
+    icon: 'i-lucide-scroll-text',
+    to: '/admin/history'
   },
   {
     label: 'Logout',

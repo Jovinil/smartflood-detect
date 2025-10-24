@@ -17,9 +17,11 @@ const router = useRouter();
 
 let intervalID: ReturnType<typeof setInterval> | null = null;
 
+const { logout } = useAuth();
+
 onMounted(() => {
   intervalID = setInterval(() => {
-    router.push('/')
+    logout();
   }, 3000)
 })
 

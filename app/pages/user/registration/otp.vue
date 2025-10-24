@@ -69,7 +69,7 @@ const recaptchaDiv = ref<HTMLElement | null>(null)
 const handleVerifyCode = async () => {
   const success = await otpStore.verifyCode()
   if (success) {
-    router.push('/user/registration/redirect') // 👈 redirect after success
+    router.push('/user/registration/redirect')
   }
 }
 

@@ -1,12 +1,8 @@
 <template>
-  <div>
+  <div class="flex flex-col min-h-screen">
     <AppHeader />
-    <slot />
+    <div class="flex-1 h-full">
+      <slot />
+    </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-
-const show = ref(false)
-</script>

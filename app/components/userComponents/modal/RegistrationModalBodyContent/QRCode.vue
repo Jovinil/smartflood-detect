@@ -29,5 +29,4 @@
 
     </svg>
     <div>Scan for user registration</div>
-
 </template>

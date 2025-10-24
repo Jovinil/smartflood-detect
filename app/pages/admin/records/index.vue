@@ -260,16 +260,6 @@ console.log(data.value.length)
 const globalFilter = ref('')
 </script>
 
-<!-- <script setup lang="ts">
-import { getPaginationRowModel } from '@tanstack/vue-table'
-
-const { data, pagination, globalFilter, recordsStore } = useRecords()
-const { columns } = useRecordsColumn()
-
-const table = useTemplateRef('table')
-
-</script> -->
-
 <template>
 <div class="flex flex-col h-screen px-5 py-6">
   <!-- Fixed Header -->

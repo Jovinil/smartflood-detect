@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 px-6 shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-0 relative">
+    <div class="flex flex-col h-auto md:h-full md:flex-1 p-4 px-6 shadow-xl z-50 bg-gray-200 dark:bg-gray-950 min-h-screen relative">
 
       <SidebarModal/>
 
@@ -226,8 +226,6 @@ const handleUpdateDevice = async () => {
   mapStore.address = null;
 
   await locationStore.fetchDevicesLazy(true);
-  
-  // locationStore.updateDeviceStore(deviceValue.value);
 }
 
 </script>
