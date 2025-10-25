@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
 
     if(!id){
         setResponseStatus(event, 400);
-        return {errorMessage: "Missing ID parameter"}
+        return {errorMessage: "Missing ID parameter", exist: false}
     }
 
     try{
@@ -15,10 +15,10 @@ export default defineEventHandler(async (event) => {
 
         if(!snapshot.exists()) {
             setResponseStatus(event, 404);
-            return {errorMessage: "Location not found"};
+            return {errorMessage: "Location not found", exist: false};
         }
 
-        return {message: "Data Retrieved", data};
+        return {message: "Data Retrieved", exist: true, data};
     } catch(error){
         setResponseStatus(event, 500);
         return {errorMessage: `${error}`};

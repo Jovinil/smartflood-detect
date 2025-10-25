@@ -13,165 +13,47 @@ const recordsStore = useRecordsStore()
 
 const useRecords = useRecordsStore();
 
-type Payment = {
-  id: string
-  date: string
-  status: 'paid' | 'failed' | 'refunded'
-  email: string
-  amount: number
+type Message = {
+  id: string,
+  category: 'message',
+  logType: string,
+  before: {
+    heading: string,
+    message: string
+  },
+  after: {
+    heading: string,
+    message: string
+  },
+  createdAt: string
 }
 
-const data = ref<Payment[]>([
-  {
-    id: '4600',
-    date: '2024-03-11T15:30:00',
-    status: 'paid',
-    email: 'james.anderson@example.com',
-    amount: 594
+type Device = {
+  id: string,
+  category: 'location',
+  logType: string,
+  before: {
+    deviceName: string,
+    deviceStatus: 'active' | 'inactive',
+    locationName: string,
+    longitude: number,
+    latitude: number
   },
-  {
-    id: '4599',
-    date: '2024-03-11T10:10:00',
-    status: 'failed',
-    email: 'mia.white@example.com',
-    amount: 276
+  after: {
+    deviceName: string,
+    deviceStatus: 'active' | 'inactive',
+    locationName: string,
+    longitude: number,
+    latitude: number
   },
-  {
-    id: '4598',
-    date: '2024-03-11T08:50:00',
-    status: 'refunded',
-    email: 'william.brown@example.com',
-    amount: 315
-  },
-  {
-    id: '4597',
-    date: '2024-03-10T19:45:00',
-    status: 'paid',
-    email: 'emma.davis@example.com',
-    amount: 529
-  },
-  {
-    id: '4596',
-    date: '2024-03-10T15:55:00',
-    status: 'paid',
-    email: 'ethan.harris@example.com',
-    amount: 639
-  },
-  {
-    id: '4595',
-    date: '2024-03-09T12:20:00',
-    status: 'failed',
-    email: 'sophia.miller@example.com',
-    amount: 482
-  },
-  {
-    id: '4594',
-    date: '2024-03-09T09:15:00',
-    status: 'paid',
-    email: 'liam.jones@example.com',
-    amount: 720
-  },
-  {
-    id: '4593',
-    date: '2024-03-08T14:30:00',
-    status: 'refunded',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-  {
-    id: '4592',
-    date: '2024-03-08T11:00:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-  {
-    id: '4591',
-    date: '2024-03-07T16:45:00',
-    status: 'failed',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-  {
-    id: '4590',
-    date: '2024-03-07T09:20:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-  {
-    id: '4589',
-    date: '2024-03-06T13:15:00',
-    status: 'refunded',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-  {
-    id: '4588',
-    date: '2024-03-06T10:05:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4587',
-    date: '2024-03-05T15:40:00',
-    status: 'failed',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4586',
-    date: '2024-03-05T12:30:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4585',
-    date: '2024-03-04T14:25:00',
-    status: 'refunded',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4584',
-    date: '2024-03-04T11:15:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4583',
-    date: '2024-03-03T16:50:00',
-    status: 'failed',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4582',
-    date: '2024-03-03T09:30:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },  
-  {
-    id: '4581',
-    date: '2024-03-02T13:20:00',
-    status: 'refunded',
-    email: 'jjames.anderson@example.com',
-    amount: 410
-  },  
-  {
-    id: '4580',
-    date: '2024-03-02T10:10:00',
-    status: 'paid',
-    email: 'johndoe@gmail.com',
-    amount: 410
-  },
-])
+  createdAt: string
+}
 
-const columns: TableColumn<Payment>[] = [
+type LogsRow = Device | Message;
+
+const data = ref<LogsRow[]>(recordsStore.actionLogs)
+
+const columns: TableColumn<LogsRow>[] = [
   {
     id: 'expand',
     cell: ({ row }) =>
@@ -193,53 +75,55 @@ const columns: TableColumn<Payment>[] = [
   {
     accessorKey: 'id',
     header: '#',
-    cell: ({ row }) => `#${row.getValue('id')}`
+    cell: ({ row }) => `${row.original.id}`,
   },
   {
-    accessorKey: 'date',
-    header: 'Date',
-    cell: ({ row }) => {
-      return new Date(row.getValue('date')).toLocaleString('en-US', {
-        day: 'numeric',
+    accessorKey: 'category',
+    header: 'Category',
+  },
+  {
+    accessorKey: 'logType',
+    header: 'Log Type',
+  },
+   {
+    accessorKey: 'createdAt',
+    header: 'Created At',
+    cell: ({ row }) =>
+      new Date(row.original.createdAt).toLocaleString('en-US', {
         month: 'short',
+        day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
-      })
-    }
+      }),
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
+    id: 'after',
+    header: 'Data',
     cell: ({ row }) => {
-      const color = {
-        paid: 'success' as const,
-        failed: 'error' as const,
-        refunded: 'neutral' as const
-      }[row.getValue('status') as string]
+      const item = row.original
 
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.getValue('status')
-      )
-    }
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email'
-  },
-  {
-    accessorKey: 'amount',
-    header: () => h('div', { class: 'text-right' }, 'Amount'),
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue('amount'))
+      // ✅ Use category again
+      if (item.category === 'message') {
+        return h('div', { class: 'flex flex-col' }, [
+          h('p', { class: 'font-medium' }, "Heading:" + item.after.heading),
+          h('p', { class: 'text-sm text-gray-500 whitespace-normal break-words max-w-md' }, "Message: " + item.after.message),
+        ])
+      }
 
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'EUR'
-      }).format(amount)
+      if (item.category === 'location') {
+        return h('div', { class: 'flex flex-col' }, [
+          h('p', { class: 'font-medium' }, "Device Name: " + item.after.deviceName),
+          h(
+            'p',
+            { class: `text-sm ${item.after.deviceStatus === 'active' ? 'text-green-600' : 'text-red-500'}` },
+            "Device Status: " + item.after.deviceStatus
+          ),
+          h('p', { class: 'text-xs text-gray-400' }, "Location Name: " + item.after.locationName),
+        ])
+      }
 
-      return h('div', { class: 'text-right font-medium' }, formatted)
-    }
+      return h('div', '—')
+    },
   }
 ]
 
@@ -295,21 +179,46 @@ const globalFilter = ref('')
         <template #expanded="{ row }">
           <div class="flex items-center justify-center gap-5">
 
-            <div class="flex flex-col">
-              <p>{{ row.original.id }}</p>
+            <div class="flex flex-col" v-if="row.original.category === 'location'">
+              <p>{{ row.original.after.deviceName }}</p>
             
-              <p>{{ row.original.date }}</p>
+              <p>{{ row.original.after.deviceStatus }}</p>
               
-              <p>{{ row.original.status }}</p>
+              <p>{{ row.original.after.locationName}}</p>
               
-              <p>{{ row.original.email }}</p>
+              <p>{{ row.original.after.longitude}}</p>
               
-              <p>{{ row.original.amount }}</p>  
+              <p>{{ row.original.after.latitude}}</p>  
+            </div>
+
+            <div class="flex flex-col" v-else>
+              <p>{{ row.original.after.heading }}</p>
+
+              <p class="text-sm text-gray-500 whitespace-normal break-words max-w-md">{{ row.original.after.message }}</p>
             </div>
           
             <UButton label="See previous Data" @click="recordsStore.visibleContainer" />
+            <div class="flex flex-col" v-if="row.original.category === 'location' && recordsStore.seePrevious">
+              <!-- <div class="flex flex-col" v-if="row.original.logType === 'CREATE'">
+                <p>No previous data. This is a creation log.</p>
+              </div v-else> -->
+              <p>{{ row.original.before.deviceName }}</p>
+            
+              <p>{{ row.original.before.deviceStatus }}</p>
+              
+              <p>{{ row.original.before.locationName}}</p>
+              
+              <p>{{ row.original.before.longitude}}</p>
+              
+              <p>{{ row.original.before.latitude}}</p>
 
-            <div v-if="recordsStore.seePrevious">awda</div>
+            </div>
+
+            <div class="flex flex-col" v-if="row.original.category === 'message' && recordsStore.seePrevious">
+              <p>{{ row.original.before.heading }}</p>
+              
+              <p class="text-sm text-gray-500 whitespace-normal break-words max-w-md">{{ row.original.before.message }}</p>
+            </div>
             
           </div>
         </template>

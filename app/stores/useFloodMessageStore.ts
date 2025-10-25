@@ -80,13 +80,11 @@ export const useFloodMessageStore = defineStore('floodMessage', () => {
         floodMessages.value[message.id].body = message.body
       });
     }catch(error){
-      console.log(`igwa error ${error}`)
+      console.log(`Error occured ${error}`)
     }
   }
 
   const saveEdit = (status: string, newHeading: string, newMessage: string) => {
-    console.log(status)
-    console.log(floodStatusValue.value)
     const temp = floodMessages.value.find(msg => status === floodStatusValue.value)
     temp!.body = newMessage;
     temp!.heading = newHeading;
@@ -113,15 +111,12 @@ const floodMessageBody = computed({
 })
 
 const setFloodMessage = (newFloodMessage: FloodMessageInfo) => {
-  console.log("called")
   floodMessage.value = JSON.parse(JSON.stringify(newFloodMessage));
 }
 
 const updateFloodMessage = async (status: string, heading: string, message: string) => {
-  console.log(message)
         const tempStatus = status.toString().split(" ");
         const temp = tempStatus[tempStatus.length - 1].toLowerCase().trim();
-        console.log(temp)
         const validated = messageSchema.safeParse({status: temp, heading, message}, {
             reportInput: true
         });
