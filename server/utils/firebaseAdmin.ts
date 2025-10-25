@@ -20,4 +20,5 @@ if (!getApps().length) {
 // Export the Firebase Admin SDK services you need
 export const adminAuth = getAuth(app);
 export const adminDB = getFirestore(app);
+adminDB.settings({ignoreUndefinedProperties: true})
 export const adminRTDB = getDatabase(app);
