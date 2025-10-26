@@ -3,7 +3,7 @@ import z from "zod"
 
 const logSchema = z.object({
     waterLevel: z.number("must be number"),
-    waterLevelStatus: z.number()
+    waterLevelStatus: z.string()
 });
 const paramSchema = z.object({
     id: z.string("must be string")

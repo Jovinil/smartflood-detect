@@ -109,15 +109,15 @@
         <template #content>
           <div class="flex flex-col gap-2">
             <div>
-              <p>The water level is {{ deviceValue?.currentWaterLevel }}cm</p>
+              <p>The water level is {{ environmentalData?.currentWaterLevel }}cm</p>
             </div>
            
             <div>
-              <p>Date(MM-DD-YY) / time</p>
+              <p>Date(MM-DD-YY) / time {{ new Date(environmentalData?.updatedAt ?? 0).toLocaleString() }}</p>
             </div>
 
             <div class="flex justify-between">
-              <p>Status Level ({{ deviceValue?.currentWaterLevelStatus }})</p>
+              <p>Status Level ({{ environmentalData?.currentWaterLevelStatus }})</p>
             </div>
           </div>
            
@@ -164,6 +164,9 @@ import { useMapStore } from '~/app/stores/useMapStore';
 import { useLocationStore } from '~/app/stores/useLocationStore';
 import { useCurrentUser } from 'vuefire'
 import type { FormError, FormSubmitEvent } from '@nuxt/ui';
+import { getDatabase, ref as dbRef } from 'firebase/database';
+
+const db = getDatabase();
 
 const user = useCurrentUser();
 const mapStore = useMapStore();
@@ -195,12 +198,32 @@ const status = ref([
   },
 ])
 
+interface DeviceInfo {
+    label: string,
+    moduleID: string,
+    deviceName: string,
+    locationName: string,
+    longitude: number,
+    latitude: number,
+    currentWaterLevel?: number,
+    currentWaterLevelStatus?: 'safe' | 'warning' | 'danger',
+    deviceStatus: 'active' | 'inactive',
+    updatedAt?: number | null
+}
 
 
 const deviceValue = computed({
   get: () => locationStore.device,
   set: (val) => locationStore.setDevice(val!)
 })
+
+// HANDLE THE REALTIME SHOWING OF DATA
+const deviceRef = computed(() => {
+  const id = deviceValue.value?.moduleID
+  return id ? dbRef(db, `locations/${id}`) : null
+})
+
+const environmentalData = useDatabaseObject<DeviceInfo>(deviceRef);
 
 const handleUpdateDevice = async () => {
 

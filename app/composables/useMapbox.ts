@@ -28,7 +28,7 @@ export function useMapbox(mapContainer: Ref<HTMLElement | null>, geocoderContain
       const data = await resp.json()
 
       // setted value of address in mapStore as .text not .place_name
-      return data.features?.[0]?.text || null
+      return data.features?.[0]?.place_name || null
     } catch (err) {
       console.error("Reverse geocode failed:", err)
       return null

@@ -31,7 +31,6 @@ export default defineEventHandler( async (event) => {
                 longitude: validated.data.longitude,
                 latitude: validated.data.latitude,
                 deviceStatus: validated.data.deviceStatus,
-                updatedAt: serverTimestamp()
             });
 
             const afterPath = await adminRTDB.ref(`locations/${validated.data.moduleID}`).once('value')
