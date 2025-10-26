@@ -1,33 +1,57 @@
 <script lang="ts" setup>
+import { useWaterLevelStore } from '~/app/stores/useWaterLevelStore'
+import { useCollection } from 'vuefire'
+import { getFirestore, collectionGroup, query, orderBy } from 'firebase/firestore'
+
 interface AreaChartItem {
-  date: string
-  desktop: number
-  mobile: number
+  createdAt: string
+  waterLevel: number
+  id: string
 }
+
+const waterLevelStore = useWaterLevelStore();
+let intervalId: NodeJS.Timeout | null = null;
+
 
 const categories: ComputedRef<Record<string, BulletLegendItemInterface>> =
   computed(() => ({
-    desktop: {
-      name: 'Device 1',
-      color: '#3b82f6',
-    },
-    mobile: {
-      name: 'Device 2',
+    waterLevel: {
+      name: 'Water Level (cm)',
       color: '#22c55e',
-    },
+    }
   }))
 
-const AreaChartData: AreaChartItem[] = [
-  { date: '2024-04-01', desktop: 222, mobile: 150 },
-  { date: '2024-04-02', desktop: 180, mobile: 97 },
-  { date: '2024-04-03', desktop: 167, mobile: 120 },
-  { date: '2024-04-04', desktop: 260, mobile: 240 },
-  { date: '2024-04-05', desktop: 240, mobile: 290 },
-]
+ const MAX_POINTS = 6
+
+const AreaChartData = computed(() => {
+  const logs = waterLevelStore.waterLevelLogs
+    .slice(-MAX_POINTS) // take the last MAX_POINTS entries
+    .map(item => ({
+      id: item.id,
+      createdAt: new Date(item.createdAt).toLocaleTimeString(),
+      waterLevel: item.waterLevel,
+    }))
+  return logs
+})
+
+
 
 const xFormatter = (tick: number): string => {
-  return `${AreaChartData[tick]?.date}`
+  
+  return `${AreaChartData.value[tick]?.createdAt ?? ''}`
 }
+
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    waterLevelStore.fetchWaterLevelLogs()
+  }, 3000)
+})
+
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId)
+})
 </script>
 
 <template>

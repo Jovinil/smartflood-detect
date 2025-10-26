@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
     try {   
-        const actionLogRef = await adminDB.collection('actionLogs').get()
+        const actionLogRef = await adminDB.collection('actionLogs').orderBy('createdAt', 'desc').get()
 
         const actionLog = actionLogRef.docs.map(doc => ({ ...doc.data(), createdAt: doc.data().createdAt.toDate().toISOString()}))
 
