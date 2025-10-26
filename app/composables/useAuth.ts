@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signOut, type Auth } from "firebase/auth";
+import { EmailAuthCredential, EmailAuthProvider, reauthenticateWithCredential, signInWithEmailAndPassword, signOut, updatePassword, type Auth } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
 import { email, z } from "zod";
 
@@ -44,6 +44,24 @@ export const useAuth = () => {
         }   
     }
 
+    const changePassword = async (currentPassword : string, newPassword : string) => {
+        const user = useCurrentUser();
+
+        if(!user || !user.value?.email){
+            console.error('No authenticated user found')
+            return;
+        }
+
+        try {
+            const credential = EmailAuthProvider.credential(user.value.email, currentPassword)
+            await reauthenticateWithCredential(user.value, credential)
+            await updatePassword(user.value, newPassword)
+            console.log("Account password successfully updated")
+        }catch(error) {
+            console.error(`Error updating use password: ${error}`)
+        }
+    }
+
     const logout = () => {
         signOut(auth)
         .then(() => {
@@ -55,5 +73,5 @@ export const useAuth = () => {
     }
 
 
-    return { errorMessage, login, logout }
+    return { errorMessage, login, logout, changePassword }
 }

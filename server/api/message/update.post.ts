@@ -16,12 +16,30 @@ export default defineEventHandler(async (event) => {
     }
 
     try{
-        const messageRef = adminDB.collection('messages').doc(validated.data.status)
+        const before = await adminDB.collection('messages').doc(validated.data.status).get()
+
+        const messageRef = await adminDB.collection('messages').doc(validated.data.status)
         messageRef.set({
             heading: validated.data.heading,
             body: validated.data.message
         }, {merge: true});
-        
+
+        const after = await adminDB.collection('messages').doc(validated.data.status).get()
+
+        if(!before.exists && !after.exists) {
+            console.log('Before or after data does not exist')
+            return;
+        }
+        const actionLogRef = await $fetch('/api/actionLog/message/create',{
+            method: 'POST',
+            body: {
+                status: validated.data.status,
+                logType: 'UPDATE',
+                before: before.data(),
+                after: after.data()
+            }
+        })
+
     }catch(error){
         setResponseStatus(event, 500);
         return {errorMessage: error}

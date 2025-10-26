@@ -1,9 +1,9 @@
 <template>
   <h1 class="text-2xl font-bold mb-4 text-center">Change Password</h1>
-  <UForm :schema="schema" :state="state" class="space-y-4 m-0 md:ms-3" @submit="onSubmit">
+  <UForm :schema="schema" :state="state" class="space-y-4 m-0 md:ms-3" @submit="handleChangePassword">
     <UFormField label="Current Password">
       <UInput
-        v-model="currPassword"
+        v-model="state.currPassword"
         placeholder="Password"
         :type="showCurr ? 'text' : 'password'"
         class="w-full"
@@ -26,7 +26,7 @@
 
     <UFormField label="Password">
       <UInput
-        v-model="tempPassword"
+        v-model="state.tempPassword"
         placeholder="Password"
         :type="showTemp ? 'text' : 'password'"
         class="w-full"
@@ -49,7 +49,7 @@
 
       <UFormField label="Confirm Password">
       <UInput
-        v-model="finalPassword"
+        v-model="state.finalPassword"
         placeholder="Password"
         :type="showFinal ? 'text' : 'password'"
         class="w-full"
@@ -90,8 +90,10 @@ definePageMeta({
   layout: 'login' 
 })
 
-import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import z from 'zod';
+
+const auht = useAuth();
 
 const showCurr = ref(false);
 const showTemp = ref(false);
@@ -102,9 +104,12 @@ const tempPassword = ref('');
 const finalPassword = ref('');
 
 const schema = z.object({
-  currPassword: z.string('Invalid email'),
+  currPassword: z.string('Invalid password'),
   tempPassword: z.string('Password is required').min(8, 'Must be at least 8 characters'),
   finalPassword: z.string('Password is required').min(8, 'Must be at least 8 characters')
+}).refine((data) => data.tempPassword === data.finalPassword, {
+  message: "Passwords do not match",
+  path: ['finalPassword']
 })
 
 type Schema = z.output<typeof schema>
@@ -116,8 +121,10 @@ const state = reactive<Partial<Schema>>({
 })
 
 const toast = useToast()
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+const handleChangePassword = async (event: FormSubmitEvent<Schema>) => {
+  console.log('reached')
   toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  auht.changePassword(state.currPassword!, state.finalPassword!)
   console.log(event.data)
 }
 
