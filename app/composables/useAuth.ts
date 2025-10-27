@@ -57,6 +57,7 @@ export const useAuth = () => {
             await reauthenticateWithCredential(user.value, credential)
             await updatePassword(user.value, newPassword)
             console.log("Account password successfully updated")
+            navigateTo('/'); 
         }catch(error) {
             console.error(`Error updating use password: ${error}`)
         }
