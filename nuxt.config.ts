@@ -1,38 +1,36 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
-import { databaseURL } from "firebase-functions/params";
-
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   ssr: false,
-  
+
   dir: {
     pages: './app/pages',
     layouts: './app/layouts',
     middleware: './app/middleware',
   },
-  
+
   imports: {
     dirs: [
-      'app/composables',          // Top-level composables in app folder
-      'app/composables/**'        // All nested files within composables
-    ]
+      'app/composables',
+      'app/composables/**',
+    ],
   },
+
   components: [
     {
-      path: '~/app/components', 
+      path: '~/app/components',
       extensions: ['vue'],
-      pathPrefix: false, 
+      pathPrefix: false,
     },
-
   ],
+
   css: [
     '~/assets/css/main.css',
     'mapbox-gl/dist/mapbox-gl.css',
-    '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
+    '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css',
   ],
-  
+
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
@@ -46,9 +44,32 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-charts',
     'nuxt-vuefire',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
   ],
-  
+
+  // ✅ Make html2pdf use html2canvas-pro (fixes oklch parsing crash)
+  vite: {
+    resolve: {
+      alias: {
+        html2canvas: 'html2canvas-pro',
+      },
+    },
+
+    optimizeDeps: {
+      include: [
+        // if you're using html2pdf now:
+        'html2pdf.js',
+        'html2canvas-pro',
+
+        // you already had these (keep them)
+        'html-to-image',
+        'jspdf',
+        'canvg',
+        'dompurify',
+      ],
+    },
+  },
+
   vuefire: {
     config: {
       apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
@@ -62,7 +83,7 @@ export default defineNuxtConfig({
     },
     auth: {
       enabled: true,
-      // sessionCookie: true, // Consider carefully if session cookies are needed for your use case
+      // sessionCookie: true,
     },
   },
 
@@ -75,14 +96,14 @@ export default defineNuxtConfig({
       firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID,
       firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID
-    }
+      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+    },
   },
 
   colorMode: { classSuffix: '' },
-  
+
   devServer: {
     host: '127.0.0.1',
-    port: 3001 // You can also specify the port here if needed
-  }
-});
+    port: 3001,
+  },
+})

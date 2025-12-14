@@ -95,14 +95,19 @@ const handleMapDblClick = async (e: any) => {
     if(!selectedID) return
 
     if (!map.value || !mapLoaded.value) {
-      console.warn("Map not ready yet. Retrying centerMapOnDevice soon...")
-      // Retry once the map finishes loading
-      const stop = watch(mapLoaded, (loaded) => {
-        if (loaded) {
-          stop()
-          centerMapOnDevice()
-        }
-      })
+      console.warn("Map not ready yet. Waiting for load to center...")
+
+      // Ensure we only trigger once, even if called multiple times
+      const unwatch = watch(
+        mapLoaded,
+        (loaded) => {
+          if (loaded) {
+            unwatch()
+            nextTick(() => centerMapOnDevice())
+          }
+        },
+        { immediate: false } // <-- important: don’t trigger instantly
+      )
       return
     }
 
@@ -203,11 +208,16 @@ const handleMapDblClick = async (e: any) => {
       geocoderContainer.value.appendChild(geocoder.onAdd(map.value))
     }
 
-    map.value.on("load", () => {
-      mapLoaded.value = true;
-      // safe to use map functions now
-      centerMapOnDevice();
+    map.value.on("load", async () => {
+      mapLoaded.value = true
+
+      await new Promise((r) => setTimeout(r, 100))
+      // ✅ Always center once map is loaded
+      if (mapStore.selectedDevice) {
+        centerMapOnDevice()
+      }
     })
+
 
     // Handle resize
     window.addEventListener("resize", () => {
@@ -251,10 +261,11 @@ const handleMapDblClick = async (e: any) => {
 
     watch(
       () => mapStore.isDeviceSelected,
-      (selected) => {
+      async (selected) => {
         if (selected) {
+          await nextTick()
           centerMapOnDevice()
-          mapStore.isDeviceSelected = false
+          setTimeout(() => (mapStore.isDeviceSelected = false), 300)
         }
       }
     )

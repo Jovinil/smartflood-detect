@@ -1,7 +1,7 @@
 <template>
 
   <div class="px-8 py-3 md:px-30 sm:py-8 flex flex-col md:grid grid-cols-2 gap-8">
-    <Multilines class="h-fit sm:h-full" />
+    <Multilines class="h-fit sm:h-full" :max-points="6"/>
     
     <StatusCard class="h-full sm:h-full" />
 
