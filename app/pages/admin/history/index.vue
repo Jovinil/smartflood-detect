@@ -23,7 +23,7 @@
           <!-- Optional PDF header info -->
           <div class="flex items-start justify-between">
             <div>
-              <h1 class="text-lg font-semibold">SmartFlood Water Level Report</h1>
+              <h1 class="text-lg font-semibold">BAHAWATCH Water Level Report</h1>
               <p class="text-sm opacity-70">Device: {{ deviceValue?.deviceName ?? '—' }}</p>
               <p class="text-sm opacity-70">
                 Filters: {{ year }}-{{ String(month).padStart(2, '0') }}, Week {{ week }}
